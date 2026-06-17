@@ -1,0 +1,1 @@
+Esse é o git utilizado por Douglas Schlatter para o Teste da HyperDive, sendo que o projeto a ser entregado é um slice de gameplay de damas com movimentos configuráveis + ferramenta Node Based de edição e criação de Behaviour Trees
