@@ -2,6 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// Gives the initial settings for the generation of the Game Board
@@ -18,18 +19,20 @@ public class BoardSettings : ScriptableObject
     public int cellSize = 1;
     public int boardSizeX = 8;
     public int boardSizeY = 8;
+    public GameObject cellPrefab;
 
-    //List of possible spawnable objects List<BoardEntity,int >
-    List<SpawnPair> PossibleSpawns;
+    //List of possible spawnable objects List <BoardEntity,int>
+    [SerializeField]public List<SpawnPair> PossibleSpawns;
 }
 /// <summary>
 /// Made with struct so it can be edited in the editor directly 
 /// <br/>
 /// A pair (quantity to be spawned, boardEntity to be spawned)
 /// </summary>
-[SerializeField]public struct SpawnPair
+[Serializable]
+public struct SpawnPair
 {
     public int targetQuant;
-    public BoardEntity targetEntity;
+    public GameObject targetEntity;
 
 }
