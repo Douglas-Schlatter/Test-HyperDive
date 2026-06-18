@@ -1,4 +1,6 @@
 using System;
+using System.Net.Sockets;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class BoardCell : MonoBehaviour
@@ -9,19 +11,40 @@ public class BoardCell : MonoBehaviour
 
     //Occupied Related
     protected BoardEntity currentEntity;
+    [SerializeField] protected Transform spawnLocation; //--->  filled in the editor usefull
     protected bool occupied;
 
+    //Material Related
+    [SerializeField] protected Material black, grey;
+    
 
-    void Start()
+
+    public void HighLight() // Todo put an enum here for the types of highlight
     {
-        
+        throw new NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ResetMaterial()
     {
-        
+        if ((posX + posY) % 2 == 0)
+        {
+            this.gameObject.GetComponent<MeshRenderer>().material = grey;
+        }
+        else
+        {
+            this.gameObject.GetComponent<MeshRenderer>().material = black;
+        }
     }
+
+    protected void EntityRemoved()
+    {
+        //my entity got removed
+        currentEntity = null;
+        occupied = false;
+    }
+
+
+    #region Gets_and_sets
     public void SetPosition(int x, int y)
     {
         posX = x;
@@ -44,8 +67,18 @@ public class BoardCell : MonoBehaviour
 
     public void SetBoardEntity(BoardEntity targetEntity)
     {
+        //Unsubrcribe from the previews entity
+        if (currentEntity != null)
+        {
+            currentEntity.OnRemove -= EntityRemoved;
+        }
+        //Update and Subcribe to the new entity
+        targetEntity.OnRemove += EntityRemoved;
         this.currentEntity = targetEntity;
+
     }
+
+
 
     public bool IsEmpty()
     {
@@ -55,8 +88,11 @@ public class BoardCell : MonoBehaviour
     {
         occupied = targetBool;
     }
-    public void HighLight() // Todo put an enum here for the types of highlight
+
+    public Transform GetSpawnLocation()
     {
-        throw new NotImplementedException();
+        return spawnLocation;
     }
+    #endregion
+
 }

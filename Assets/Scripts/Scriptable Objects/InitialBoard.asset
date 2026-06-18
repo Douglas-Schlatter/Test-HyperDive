@@ -17,5 +17,9 @@ MonoBehaviour:
   boardSizeY: 8
   cellPrefab: {fileID: 5341136227366169594, guid: 05b99ffdd98eb724885071529755579c, type: 3}
   PossibleSpawns:
-  - targetQuant: 10
+  - targetQuant: 8
     targetEntityGameObject: {fileID: 781938888890759424, guid: b3466a17630cbef4d801655e6ad2d61d, type: 3}
+  - targetQuant: 10
+    targetEntityGameObject: {fileID: 5109529123317513070, guid: cfdfdaabfd9476b40a67b274fc52b003, type: 3}
+  - targetQuant: 4
+    targetEntityGameObject: {fileID: 2381877876316937541, guid: f842bd9eea928a947a5b72a148baaadf, type: 3}

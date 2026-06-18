@@ -79,29 +79,35 @@ public class BoardController : MonoBehaviour
 
                 if (targetSpawnPrefab != null) // if not drawed an empty space
                 {
-                    //TODO will code here remember to encapsulate later
-                    //Check if has boardEntity
-                    BoardEntity targetBoardEntity = targetSpawnPrefab.GetComponent<BoardEntity>();
-                    if (targetBoardEntity != null)
-                    {
-
-                        //Spawn and link with the cell
-                        GameObject spawnGameObj = Instantiate(targetSpawnPrefab, currentCellObj.transform.position, currentCellObj.transform.rotation);
-                        spawnGameObj.transform.parent = currentCellObj.transform;
-                        BoardCell targetCellScript = currentCellObj.GetComponent<BoardCell>();
-                        targetCellScript.SetOccupied(true);
-                        targetCellScript.SetBoardEntity(targetBoardEntity);
-                        //targetCell.
-                    }
-                    else 
-                    {
-                        Debug.LogError("The prefab " + targetSpawnPrefab.name + " tring to be spawned does not have a BoardEntity component!");
-                        
-                    }
+                    SpawnObjectInCell(currentCellObj, targetSpawnPrefab);
                 }
 
 
             }
+        }
+    }
+
+
+    protected void SpawnObjectInCell(GameObject currentCellObj, GameObject targetSpawnPrefab)
+    {
+        BoardEntity targetBoardEntity = targetSpawnPrefab.GetComponent<BoardEntity>();
+        if (targetBoardEntity != null)
+        {
+            //Check if has boardEntity
+            //Spawn and link with the cell
+            BoardCell targetCellScript = currentCellObj.GetComponent<BoardCell>();
+
+            //OPTIMIZATION here i would implement pooling -> GetObjectFromPool 
+            GameObject spawnGameObj = Instantiate(targetSpawnPrefab, targetCellScript.GetSpawnLocation().transform.position, targetCellScript.GetSpawnLocation().transform.rotation);
+            spawnGameObj.transform.parent = currentCellObj.transform;
+
+            targetCellScript.SetOccupied(true);
+            targetCellScript.SetBoardEntity(targetBoardEntity);
+        }
+        else
+        {
+            Debug.LogError("The prefab " + targetSpawnPrefab.name + " tring to be spawned does not have a BoardEntity component!");
+
         }
     }
 
@@ -182,6 +188,7 @@ public class BoardController : MonoBehaviour
         //Initialize targetCellScript
         targetCellScript.SetPosition(posX, posY);
         targetCellScript.SetOccupied(false);
+        targetCellScript.ResetMaterial();
         return targetCell;
 
     }
