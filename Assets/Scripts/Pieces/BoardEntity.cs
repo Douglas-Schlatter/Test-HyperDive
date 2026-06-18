@@ -1,16 +1,26 @@
 using UnityEngine;
 
-public class BoardEntity : MonoBehaviour
+/// <summary>
+/// Base Asbstract class for classes that can be on the board 
+/// </summary>
+public abstract class BoardEntity : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected BoardCell currentBoardCell;
+
+
+
+
+    public BoardCell GetBoardCell() 
     {
-        
+        return currentBoardCell;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetBoardCell(BoardCell targetCell)
     {
-        
+        currentBoardCell = targetCell;
     }
+
+    public abstract void GetHit();
+
+    public abstract bool CanBeCaptured();
 }

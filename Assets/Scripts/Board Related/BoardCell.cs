@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BoardCell : MonoBehaviour
@@ -38,16 +39,24 @@ public class BoardCell : MonoBehaviour
         {
             Debug.LogWarning("Tried to get board entity at " +posX+","+posY+ "but the space is empty");
         }
-
         return currentEntity;
+    }
+
+    public void SetBoardEntity(BoardEntity targetEntity)
+    {
+        this.currentEntity = targetEntity;
     }
 
     public bool IsEmpty()
     {
         return !occupied;
     }
+    public void SetOccupied(bool targetBool)
+    {
+        occupied = targetBool;
+    }
     public void HighLight() // Todo put an enum here for the types of highlight
-    { 
-        
+    {
+        throw new NotImplementedException();
     }
 }

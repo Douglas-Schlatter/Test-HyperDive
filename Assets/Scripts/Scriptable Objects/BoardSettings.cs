@@ -33,6 +33,6 @@ public class BoardSettings : ScriptableObject
 public struct SpawnPair
 {
     public int targetQuant;
-    public GameObject targetEntity;
+    public GameObject targetEntityGameObject;
 
 }

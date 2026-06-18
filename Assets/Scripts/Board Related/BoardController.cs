@@ -1,6 +1,9 @@
 using NUnit.Framework;
 using System;
 using UnityEngine;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine.Android;
 
 public class BoardController : MonoBehaviour
 {
@@ -10,6 +13,7 @@ public class BoardController : MonoBehaviour
     [SerializeField] protected GameObject cellPrefab; // ---> filled manually in the editor
     protected GameObject[,] tiles;
     [SerializeField] protected int[,] boardState; // ---> usefull for debuging 
+    [SerializeField] protected int entityCount;
     private void Awake()
     {
         GetStartVaraibles();
@@ -54,15 +58,95 @@ public class BoardController : MonoBehaviour
 
     protected void GenerateTiles() /// todo make a generate board state
     {
+        
+        List<GameObject> possiblePieces = PopulatePossiblePieces();
+
+
+
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
             {
+                //generate the tile
                 tiles[x,y] = GenerateSingleTile(x,y);
-                //probably also populate boardState here too
+
+                GameObject currentCellObj = tiles[x, y];
+                //Populate tile
+                int index = UnityEngine.Random.Range(0, possiblePieces.Count); 
+
+                GameObject targetSpawnPrefab = possiblePieces[index];
+                possiblePieces.RemoveAt(index);
+
+                if (targetSpawnPrefab != null) // if not drawed an empty space
+                {
+                    //TODO will code here remember to encapsulate later
+                    //Check if has boardEntity
+                    BoardEntity targetBoardEntity = targetSpawnPrefab.GetComponent<BoardEntity>();
+                    if (targetBoardEntity != null)
+                    {
+
+                        //Spawn and link with the cell
+                        GameObject spawnGameObj = Instantiate(targetSpawnPrefab, currentCellObj.transform.position, currentCellObj.transform.rotation);
+                        spawnGameObj.transform.parent = currentCellObj.transform;
+                        BoardCell targetCellScript = currentCellObj.GetComponent<BoardCell>();
+                        targetCellScript.SetOccupied(true);
+                        targetCellScript.SetBoardEntity(targetBoardEntity);
+                        //targetCell.
+                    }
+                    else 
+                    {
+                        Debug.LogError("The prefab " + targetSpawnPrefab.name + " tring to be spawned does not have a BoardEntity component!");
+                        
+                    }
+                }
+
+
             }
         }
     }
+
+    /// <summary>
+    /// Prepares a list simulating a bag of pieces, that can have all the objectes in BoardSettings PossibleSpawns + empty spaces
+    /// </summary>
+    /// <param name="possiblePieces"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    List<GameObject> PopulatePossiblePieces()
+    {
+        
+        //for each sp add that many gameObj in the bag
+        List<GameObject> possiblePieces = new();
+        foreach (SpawnPair sp in boardSettings.PossibleSpawns)
+        {
+            //Here it would be good to make a check if targetEntityGameObject has
+            //an boardEntity component,if not throw an error, but the way this is treated is dependend
+            // on the company you are working for, so i only annoted it
+            entityCount += sp.targetQuant;
+            for (int i = 0;  i < sp.targetQuant; i++)
+            {
+                possiblePieces.Add(sp.targetEntityGameObject);
+            }
+        }
+
+        int tileSpaces = boardSizeX * boardSizeY;
+        if (entityCount >= tileSpaces)
+        {
+            Debug.LogWarning("The quantity of pieces you want to spawn is equal or bigger then the size of the board!" +
+                "/n Only a selection of them will be spawned");
+        }
+        else //if tileSize -pieces >0 it means there is empty spaces to simulate in the bag
+        {
+            int emptySpaces = tileSpaces - entityCount;
+            for (int i = 0; i < emptySpaces; i++)
+            {
+                possiblePieces.Add(null);
+            }
+        }
+
+
+            return possiblePieces;
+
+    }
+
 
     /// <summary>
     /// Spawn a tile in determined location in relation of the parent transform
@@ -72,14 +156,33 @@ public class BoardController : MonoBehaviour
     /// <returns></returns>
     protected GameObject GenerateSingleTile(int posX, int posY)
     {
+
         // Calculate the new tile position based on this object
         Vector3 targetPosition = new Vector3(this.transform.position.x + posX, this.transform.position.y, this.transform.position.z + posY); // --->since board is 2d but the project is  3D we need to make this adjustment
         GameObject targetCell = Instantiate(cellPrefab, targetPosition, cellPrefab.transform.rotation);
         targetCell.name = "BoardCell_" + posX + "_" + posY;
-        //Set boardController as parent of the 
-        targetCell.transform.parent = this.gameObject.transform;
-        return targetCell;
 
+
+        //Set boardController as parent of the tile
+        targetCell.transform.parent = this.gameObject.transform;
+
+
+        // Check if the tile has boardCell Component
+        BoardCell targetCellScript;
+        if (cellPrefab.GetComponent<BoardCell>().Equals(null))
+        {
+            Debug.LogWarning("The prefab used for the tile cells doesn't have a boardCell component! Added as a component");
+            targetCellScript  = targetCell.AddComponent<BoardCell>();
+
+        }
+        else
+        {
+            targetCellScript = targetCell.GetComponent<BoardCell>();
+        }
+        //Initialize targetCellScript
+        targetCellScript.SetPosition(posX, posY);
+        targetCellScript.SetOccupied(false);
+        return targetCell;
 
     }
 
