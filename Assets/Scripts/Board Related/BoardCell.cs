@@ -19,9 +19,9 @@ public class BoardCell : MonoBehaviour
     
 
 
-    public void HighLight() // Todo put an enum here for the types of highlight
+    public void HighLight(string targetLayer) 
     {
-        throw new NotImplementedException();
+        this.gameObject.layer = LayerMask.NameToLayer(targetLayer);
     }
 
     public void ResetMaterial()

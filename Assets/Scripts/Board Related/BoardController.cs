@@ -29,6 +29,7 @@ public class BoardController : MonoBehaviour
     void Start()
     {
         GenerateTiles();
+        PrintBoardState();
     }
 
 
@@ -107,6 +108,8 @@ public class BoardController : MonoBehaviour
 
             targetCellScript.SetOccupied(true);
             targetCellScript.SetBoardEntity(targetBoardEntity);
+            //Update boardState to notify it has an object there
+            boardState[targetCellScript.GetPosition().x, targetCellScript.GetPosition().y] = 1; 
         }
         else
         {
@@ -280,17 +283,235 @@ public class BoardController : MonoBehaviour
     /// </summary>
     protected void ShowPattern(MovePattern pattern, Vector2Int startingPosition)
     {
-        for (int i = 0; i < pattern.moves.Count; i++)
-        {
 
+        
+        int patternSize = pattern.moves.Count;
+
+        List<Vector2Int> positionToHighlight;
+        for (int i = 0; i < patternSize; i++)
+        {
+            //TODO LATER CHECK FOR OCUPING THE SAME SPACE RULES AND BEING CAPTURED RULES,maybe variable friendly fire
+            //Check if the move is valid
+            if(!NextMoveIsValid(startingPosition, pattern.moves[i]))
+            {
+                //if not a valid move because it goes out of the board just return
+                return;
+            }
+
+            Vector2Int nextPosition = GetNextPosition(startingPosition, pattern.moves[i]);
+            BoardCell nextCellScript = tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>();
+            //if this is the lastMove
+            if (i == patternSize - 1)
+            {
+                //it is an end path location
+                
+                
+            }
+            else 
+            {
+                //it is a path location
+
+                //Is this ocuppied?
+                if (tiles[nextPosition.x, nextPosition.y])
+                {
+
+                }
+
+            }
         }
     }
 
+
+    #region MoveCalculation
     protected void MakeMoves()
     { }
 
+    /// <summary>
+    /// Given an original position and a direction to go to, returns the new position
+    /// </summary>
+    /// <returns></returns>
+    protected Vector2Int GetNextPosition(Vector2Int startingPosition, Direction direction)
+    {
+        switch (direction)
+        {
+            //Move Up
+            case Direction.N:
+                return new Vector2Int(startingPosition.x, startingPosition.y + 1);
+                break;
 
+            //Move UpRight
+            case Direction.NW:
+                return new Vector2Int(startingPosition.x - 1, startingPosition.y + 1);
+                break;
+
+            //Move UpLeft
+            case Direction.NL:
+                return new Vector2Int(startingPosition.x + 1, startingPosition.y + 1); 
+                break;
+
+            //Move Left
+            case Direction.W:
+                return new Vector2Int(startingPosition.x - 1, startingPosition.y);
+                break;
+
+            //Move Right
+            case Direction.L:
+                return new Vector2Int(startingPosition.x + 1, startingPosition.y);
+                break;
+
+            //Move DownLeft
+            case Direction.WS:
+                return new Vector2Int(startingPosition.x - 1, startingPosition.y-1);
+                break;
+
+            //Move DownRight
+            case Direction.LS:
+                return new Vector2Int(startingPosition.x + 1, startingPosition.y - 1);
+                break;
+
+            //Move Down
+            case Direction.S:
+                return new Vector2Int(startingPosition.x, startingPosition.y - 1);
+                break;
+            default:
+                return new Vector2Int(startingPosition.x, startingPosition.y);
+                break;
+
+        }
+
+    }
+
+    /// <summary>
+    /// Given an original position and a direction to go to, return true if it is a valid position in the board
+    /// </summary>
+    protected bool NextMoveIsValid(Vector2Int startingPosition, Direction direction)
+    {
+        //TODO LATER CHECK FOR OCUPING THE SAME SPACE RULES AND BEING CAPTURED RULES
+        switch (direction)
+        {
+            case Direction.N:
+                //Invalid position out of the board
+                if (startingPosition.y + 1 >= boardSizeY)
+                {
+                    return false;
+                }
+                else 
+                {
+                    return true;
+                }
+                break;
+            case Direction.NW:
+                //Invalid position out of the board
+                if ((startingPosition.y + 1 >= boardSizeY) ||( startingPosition.x -1 < 0))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            case Direction.NL:
+                //Invalid position out of the board
+                if ((startingPosition.y + 1 >= boardSizeY) || (startingPosition.x + 1 >= boardSizeX))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            case Direction.W:
+                //Invalid position out of the board
+                if ((startingPosition.x - 1 < 0))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            case Direction.L:
+                //Invalid position out of the board
+                if ((startingPosition.x + 1 >= boardSizeX))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            case Direction.WS:
+                //Invalid position out of the board
+                if ((startingPosition.x - 1 < 0)|| (startingPosition.y -1 < 0))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            case Direction.LS:
+                //Invalid position out of the board
+                if ((startingPosition.x + 1 >= boardSizeX) || (startingPosition.y - 1 < 0))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            case Direction.S:
+                //Invalid position out of the board
+                if ((startingPosition.y - 1 < 0))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                break;
+            default:
+                return false;
+                break;
+
+        }
+
+    }
     #endregion
+    #endregion
+
+    /// <summary>
+    /// Debugging print boardState, made with AI
+    /// </summary>
+    protected void PrintBoardState()
+    {
+        if (boardState == null)
+        {
+            Debug.Log("BoardState is null");
+            return;
+        }
+
+        string output = "Board State:\n";
+
+        for (int y = boardSizeY - 1; y >= 0; y--) // Print top row first
+        {
+            for (int x = 0; x < boardSizeX; x++)
+            {
+                output += boardState[x, y] + " ";
+            }
+            output += "\n";
+        }
+
+        Debug.Log(output);
+    }
+
 
 
     /// <summary>
