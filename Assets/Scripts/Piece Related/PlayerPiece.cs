@@ -83,4 +83,9 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
         return playerSettings.movePatterns;
     }
+
+    public override bool CanBeCapturedByPlayer()
+    {
+        return false;
+    }
 }

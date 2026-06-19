@@ -37,4 +37,6 @@ public abstract class BoardEntity : MonoBehaviour
     public abstract void GetCaptured();
 
     public abstract bool CanBeCapturedByPlayer();
+
+    public abstract bool CanBeCaptured();
 }

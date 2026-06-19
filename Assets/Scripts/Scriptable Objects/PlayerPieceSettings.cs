@@ -1,18 +1,20 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 [CreateAssetMenu(fileName = "PlayerPieceSettings", menuName = "Scriptable Objects/PlayerPieceSettings")]
 public class PlayerPieceSettings : ScriptableObject
 {
-    public enum Direction
+    [Serializable]public enum Direction
     {
         N,NW,NL,W,L,WS,LS,S
     }
 
+    [Serializable]
     public struct MovePattern
     {
         public List<Direction> moves;
     }
-    public List<MovePattern> movePatterns;
+    [SerializeField] public List<MovePattern> movePatterns;
 }

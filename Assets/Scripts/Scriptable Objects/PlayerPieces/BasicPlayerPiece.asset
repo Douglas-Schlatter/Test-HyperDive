@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f24cdb63160acf94b91b83cd13d7dc22, type: 3}
   m_Name: BasicPlayerPiece
   m_EditorClassIdentifier: 
+  movePatterns:
+  - moves: 000000000000000000000000
+  - moves: 030000000300000003000000
+  - moves: 040000000400000004000000
+  - moves: 070000000700000007000000

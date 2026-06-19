@@ -13,11 +13,18 @@ public class BoardController : MonoBehaviour
     int boardSizeX, boardSizeY,cellSize; //TODO MAYBE REMOVE CELLSIZE LATTER
     [SerializeField] protected GameObject cellPrefab; // ---> filled manually in the editor
     protected GameObject[,] tiles;
-    [SerializeField] protected int[,] boardState; // ---> usefull for debuging 
+    [SerializeField] protected int[,] boardState; // ---> usefull for debuging  // TODO maybe will take it out later if only the cellScriptLogic is used
     [SerializeField] protected int entityCount;
 
     //BoardState related
-    [SerializeField] protected BoardState currentBoardState;
+    [SerializeField] protected BoardState currentBoardState = BoardState.Idle;
+
+    //Layers Related
+    public const string CONST_DEFAULT_TILE_LAYER = "BoardTiles";
+    public const string CONST_INTERACTABLE_LAYER = "InteractableHighlight";
+    public const string CONST_SELECTED_LAYER = "SelectedHighlight";
+    public const string CONST_PATH_LAYER = "PathHighlight";
+    public const string CONST_END_PATH_LAYER = "EndPathHightLight";
     private void Awake()
     {
         GetStartVaraibles();
@@ -243,7 +250,7 @@ public class BoardController : MonoBehaviour
                 if (!targetCellScript.IsEmpty())
                 {
                     //check if object is movable by the player
-                    if (gameObject.TryGetComponent<IInteractable>(out IInteractable interactable))
+                    if (targetCellScript.GetBoardEntity().TryGetComponent<IInteractable>(out IInteractable interactable))
                     {
                         //if movable go WaintingForDestination state and show possible moves
                         ShowPossibleMoves(interactable.GetMovePatterns(), targetTilePos);
@@ -286,35 +293,93 @@ public class BoardController : MonoBehaviour
 
         
         int patternSize = pattern.moves.Count;
-
-        List<Vector2Int> positionToHighlight;
+        Vector2Int nextPosition = startingPosition;
+        List<Vector2Int> positionToHighlight = new List<Vector2Int>();
         for (int i = 0; i < patternSize; i++)
         {
             //TODO LATER CHECK FOR OCUPING THE SAME SPACE RULES AND BEING CAPTURED RULES,maybe variable friendly fire
             //Check if the move is valid
-            if(!NextMoveIsValid(startingPosition, pattern.moves[i]))
+            if(!NextMoveIsValid(nextPosition, pattern.moves[i]))
             {
-                //if not a valid move because it goes out of the board just return
+                //if not a valid move because it goes out of the board just return and dont highlight anything
                 return;
             }
 
-            Vector2Int nextPosition = GetNextPosition(startingPosition, pattern.moves[i]);
+            nextPosition = GetNextPosition(nextPosition, pattern.moves[i]);
             BoardCell nextCellScript = tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>();
+
             //if this is the lastMove
             if (i == patternSize - 1)
             {
-                //it is an end path location
-                
-                
+                //Is this ocuppied?
+                if (!nextCellScript.IsEmpty())
+                {
+                    //If the entity occuping this place can be captured by the player
+                    if (nextCellScript.GetBoardEntity().CanBeCapturedByPlayer())
+                    {
+                        //if there is a piece here and it can be captured this is the end of this pattern
+                        foreach (Vector2Int cell in positionToHighlight)
+                        {
+                            tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
+                        }
+
+                        tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+
+                        return;
+                    }
+                    else
+                    {
+                        //we encountered something we cant capture!
+                        //return without highlighting this path
+                        return;
+                    }
+                }
+                else 
+                {
+                    //Nothing here, just the end of the path, highlight all the stored path + last location
+                    foreach (Vector2Int cell in positionToHighlight)
+                    {
+                        tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
+                    }
+
+                    tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+
+                    return;
+                }
+
             }
             else 
             {
                 //it is a path location
 
                 //Is this ocuppied?
-                if (tiles[nextPosition.x, nextPosition.y])
+                if (!nextCellScript.IsEmpty())
                 {
+                    //If the entity occuping this place can be captured by the player
+                    if (nextCellScript.GetBoardEntity().CanBeCapturedByPlayer())
+                    {
+                        //if there is a piece here and it can be captured this is the end of this pattern
+                        foreach (Vector2Int cell in positionToHighlight)
+                        {
+                            tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
+                        }
 
+                        tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+
+                        return;
+                    }
+                    else
+                    {
+                        //we encountered something we cant capture!
+                        //return without highlighting this path
+                        return;
+                    }
+                }
+                else 
+                {
+                    //it is just an emprty space in the path, so add this location to be highlighted later
+                    //if all goes well
+                    positionToHighlight.Add(nextPosition);
                 }
 
             }

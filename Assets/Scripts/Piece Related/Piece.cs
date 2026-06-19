@@ -10,6 +10,17 @@ public class Piece : BoardEntity
 
 
     /// <summary>
+    ///Behaviour of moving must accept friendly fire, i would also use this
+    ///function in the future when implementing the enemy
+    /// </summary>
+    /// <returns></returns>
+    public override bool CanBeCaptured()
+    {
+        return true;
+    }
+
+
+    /// <summary>
     ///For the default result returns true, but can be overwrited later 
     /// </summary>
     /// <returns></returns>

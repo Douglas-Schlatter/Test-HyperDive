@@ -9,6 +9,16 @@ public class Obstacle : BoardEntity
     public override event Action OnRemove;
 
 
+    /// <summary>
+    /// Even by bheaviours or enemies obstacles can't be captured
+    /// </summary>
+    /// <returns></returns>
+    public override bool CanBeCaptured()
+    {
+        return false;
+    }
+
+
     //Cannot be captured
     //I would scale this using an BoardEntity Settings (SO), where 
     //you could mark if that piece can be captured or not
