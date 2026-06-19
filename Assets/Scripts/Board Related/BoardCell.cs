@@ -12,7 +12,7 @@ public class BoardCell : MonoBehaviour
     //Occupied Related
     protected BoardEntity currentEntity;
     [SerializeField] protected Transform spawnLocation; //--->  filled in the editor usefull
-    protected bool occupied;
+    [SerializeField] protected bool occupied; // Left it as SerializeField beacuse is good for debuging
 
     //Material Related
     [SerializeField] protected Material black, grey;
@@ -43,28 +43,6 @@ public class BoardCell : MonoBehaviour
         occupied = false;
     }
 
-
-    #region Gets_and_sets
-    public void SetPosition(int x, int y)
-    {
-        posX = x;
-        posY = y;
-    }
-
-    public Vector2 GetPosition()
-    {
-        return new Vector2(posX, posY);
-    }
-
-    public BoardEntity GetBoardEntity()
-    {
-        if (currentEntity.Equals(null))
-        {
-            Debug.LogWarning("Tried to get board entity at " +posX+","+posY+ "but the space is empty");
-        }
-        return currentEntity;
-    }
-
     public void SetBoardEntity(BoardEntity targetEntity)
     {
         //Unsubrcribe from the previews entity
@@ -78,16 +56,42 @@ public class BoardCell : MonoBehaviour
 
     }
 
+    public void SetOccupied(bool targetBool)
+    {
+        occupied = targetBool;
+    }
+
+
+    #region Gets_and_sets
+    public void SetPosition(int x, int y)
+    {
+        posX = x;
+        posY = y;
+    }
+
+    public Vector2Int GetPosition()
+    {
+        return new Vector2Int(posX, posY);
+    }
+
+    public BoardEntity GetBoardEntity()
+    {
+        if (currentEntity.Equals(null))
+        {
+            Debug.LogWarning("Tried to get board entity at " +posX+","+posY+ "but the space is empty");
+        }
+        return currentEntity;
+    }
+
+
+
 
 
     public bool IsEmpty()
     {
         return !occupied;
     }
-    public void SetOccupied(bool targetBool)
-    {
-        occupied = targetBool;
-    }
+
 
     public Transform GetSpawnLocation()
     {

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 385688067492800476}
   - component: {fileID: 4084926353961635606}
   - component: {fileID: 1290073290387515957}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BoardCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 294916221045641562}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpawnLocation
   m_TagString: Untagged
   m_Icon: {fileID: 0}

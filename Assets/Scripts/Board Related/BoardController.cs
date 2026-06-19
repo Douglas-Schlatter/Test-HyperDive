@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine.Android;
+using static PlayerPieceSettings;
 
 public class BoardController : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class BoardController : MonoBehaviour
     protected GameObject[,] tiles;
     [SerializeField] protected int[,] boardState; // ---> usefull for debuging 
     [SerializeField] protected int entityCount;
+
+    //BoardState related
+    [SerializeField] protected BoardState currentBoardState;
     private void Awake()
     {
         GetStartVaraibles();
@@ -193,7 +197,111 @@ public class BoardController : MonoBehaviour
 
     }
 
+
     //probably will need a spawn piece void later
 
     #endregion
+
+    #region BoardComunication
+
+
+    /// <summary>
+    /// Given an GameObject of a cell,  returns it index
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <returns></returns>
+    public Vector2Int GetTileIndex(GameObject gameObject)
+    {
+        BoardCell cellScript = gameObject.GetComponent<BoardCell>();
+        return cellScript.GetPosition();
+    }
+
+    /// <summary>
+    /// Changes the layer of a tile, used in the highlight of the tiles
+    /// </summary>
+    /// <param name="targetTilePos"></param>
+    /// <param name="targetLayer"></param>
+    public void ChangeLayerOfTile(Vector2Int targetTilePos, string targetLayer)
+    {
+        tiles[targetTilePos.x, targetTilePos.y].layer = LayerMask.NameToLayer(targetLayer);
+    }
+
+    public void SelectTile(Vector2Int targetTilePos)
+    {
+        //verify is the tile is ocuppied, verifiy if it implements movable, verify state, if movable and interacable show moves
+        BoardCell targetCellScript = tiles[targetTilePos.x, targetTilePos.y].gameObject.GetComponent<BoardCell>();
+
+
+        switch (currentBoardState)
+        {
+            //Player is selecting a piece
+            case BoardState.Idle:
+                //check if occupied
+                if (!targetCellScript.IsEmpty())
+                {
+                    //check if object is movable by the player
+                    if (gameObject.TryGetComponent<IInteractable>(out IInteractable interactable))
+                    {
+                        //if movable go WaintingForDestination state and show possible moves
+                        ShowPossibleMoves(interactable.GetMovePatterns(), targetTilePos);
+                        //Lock player selecting new pieces
+                        //Change to WaitingDestination
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                break;
+            case BoardState.WaitingDestination:
+                break;
+            case BoardState.WaitingEndMove:
+                break;
+            default:
+                break;
+        }
+
+
+    }
+
+    /// <summary>
+    /// Given possible moves and a targetPosition, higlights the cells of that moves
+    /// </summary>
+    protected void ShowPossibleMoves(List<MovePattern> movePatterns, Vector2Int targetTilePos)
+    {
+        foreach (MovePattern pattern in movePatterns)
+        {
+            ShowPattern(pattern, targetTilePos);
+        }
+    }
+
+    /// <summary>
+    /// Given an Pattern and a targetPosition, higlights the cells of that moves
+    /// </summary>
+    protected void ShowPattern(MovePattern pattern, Vector2Int startingPosition)
+    {
+        for (int i = 0; i < pattern.moves.Count; i++)
+        {
+
+        }
+    }
+
+    protected void MakeMoves()
+    { }
+
+
+    #endregion
+
+
+    /// <summary>
+    /// Idle --> Wainting for player to click on an interactive piece
+    /// <br/>
+    /// WaitingDestination --> Wainting for player to click on a possible endPathLocation
+    /// <br/>
+    /// WaitingEndMove -->Waits for notify from the piece that ended move + behaviour tree execution
+    /// </summary>
+    protected enum BoardState
+    {
+        Idle, WaitingDestination, WaitingEndMove //In the future here i would implement "EnemyTurn" state to make the enemies turn in the game
+    }
 }

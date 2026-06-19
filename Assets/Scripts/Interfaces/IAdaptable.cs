@@ -5,7 +5,7 @@ using UnityEngine;
 /// This interface garantees that the behaviours implemented
 /// has a way to contact the behaviour listener
 /// </summary>
-public interface Adaptable
+public interface IAdaptable
 {
     public BehaviourTreeListener GetBehaviourTreeListener();
 }

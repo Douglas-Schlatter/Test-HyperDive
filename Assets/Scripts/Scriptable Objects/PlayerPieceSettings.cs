@@ -12,7 +12,7 @@ public class PlayerPieceSettings : ScriptableObject
 
     public struct MovePattern
     {
-        List<Direction> moves;
+        public List<Direction> moves;
     }
     public List<MovePattern> movePatterns;
 }
