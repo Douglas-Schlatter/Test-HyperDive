@@ -523,6 +523,9 @@ public class BoardController : MonoBehaviour
         //lastSelected = -Vector2Int.one;
         targetCellScript = null;
         lastSelectedPiece = null;
+
+        //Reset valid moves:
+        validMoves.Clear();
         currentBoardState = BoardState.Idle;
     }
 
