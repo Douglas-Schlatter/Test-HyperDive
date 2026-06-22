@@ -244,7 +244,7 @@ Transform:
   m_GameObject: {fileID: 2381877876316937541}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 1, y: 3, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -267,6 +267,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerSettings: {fileID: 11400000, guid: 9b99af52aa2423041986431caccfeeb7, type: 2}
   interactState: 0
+  animationTime: 1
 --- !u!1 &7905823314839675635
 GameObject:
   m_ObjectHideFlags: 0

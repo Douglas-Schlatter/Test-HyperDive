@@ -61,9 +61,6 @@ public class Piece : BoardEntity
         }
     }
 
-    public void MoveTo(Direction direction)
-    { 
-    
-    }
+
     
 }

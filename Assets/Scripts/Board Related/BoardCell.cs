@@ -11,7 +11,7 @@ public class BoardCell : MonoBehaviour
     protected int posY;
 
     //Occupied Related
-    protected BoardEntity currentEntity;
+    [SerializeField] protected BoardEntity currentEntity;
     [SerializeField] protected Transform spawnLocation; //--->  filled in the editor usefull
     [SerializeField] protected bool occupied; // Left it as SerializeField beacuse is good for debuging
 
@@ -54,6 +54,8 @@ public class BoardCell : MonoBehaviour
     #region Gets_and_sets
     public void SetBoardEntity(BoardEntity targetEntity)
     {
+        /*
+        //OLD CODE 
         //Unsubrcribe from the previews entity
         if (currentEntity != null)
         {
@@ -61,6 +63,8 @@ public class BoardCell : MonoBehaviour
         }
         //Update and Subcribe to the new entity
         targetEntity.OnRemove += EntityRemoved;
+         */
+
         this.currentEntity = targetEntity;
 
     }

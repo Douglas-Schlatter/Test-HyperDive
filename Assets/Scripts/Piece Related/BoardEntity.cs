@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public abstract class BoardEntity : MonoBehaviour
 {
-    protected BoardCell currentBoardCell;
+    [SerializeField] protected BoardCell currentBoardCell;
 
 
     // needed to notify boardcell that is now empty,
@@ -21,6 +21,7 @@ public abstract class BoardEntity : MonoBehaviour
 
     public void SetBoardCell(BoardCell targetCell)
     {
+        //this.gameObject.transform.parent = targetCell.gameObject.transform;
         currentBoardCell = targetCell;
     }
 

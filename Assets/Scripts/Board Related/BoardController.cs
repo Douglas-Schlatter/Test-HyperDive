@@ -6,6 +6,8 @@ using Unity.VisualScripting;
 using UnityEngine.Android;
 using static PlayerPieceSettings;
 using static Helper;
+using NUnit.Framework.Constraints;
+using System.Linq.Expressions;
 
 public class BoardController : MonoBehaviour
 {
@@ -19,6 +21,8 @@ public class BoardController : MonoBehaviour
 
     //Move Related
     [SerializeField]  protected Vector2Int lastSelected = -Vector2Int.one; // ---> usefull for debuging
+    IInteractable lastSelectedPiece;
+    BoardCell targetCellScript;
 
     /// <summary>
     /// After validating possible moves from a piece, add all the moves that the player can make here
@@ -58,7 +62,6 @@ public class BoardController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
 
@@ -117,6 +120,7 @@ public class BoardController : MonoBehaviour
     protected void SpawnObjectInCell(GameObject currentCellObj, GameObject targetSpawnPrefab)
     {
         BoardEntity targetBoardEntity = targetSpawnPrefab.GetComponent<BoardEntity>();
+        //Check if prefab has BoardEntity
         if (targetBoardEntity != null)
         {
             //Check if has boardEntity
@@ -125,10 +129,15 @@ public class BoardController : MonoBehaviour
 
             //OPTIMIZATION here i would implement pooling -> GetObjectFromPool 
             GameObject spawnGameObj = Instantiate(targetSpawnPrefab, targetCellScript.GetSpawnLocation().transform.position, targetCellScript.GetSpawnLocation().transform.rotation);
+            BoardEntity objBoardEntity = spawnGameObj.GetComponent<BoardEntity>();
+            //testing not puting them as child
             spawnGameObj.transform.parent = currentCellObj.transform;
 
             targetCellScript.SetOccupied(true);
-            targetCellScript.SetBoardEntity(targetBoardEntity);
+            //set the spawned object board entity to this cell
+            targetCellScript.SetBoardEntity(objBoardEntity);
+            //Set boardEntity cell as this one as well
+            targetCellScript.GetBoardEntity().SetBoardCell(targetCellScript);
             //Update boardState to notify it has an object there
             boardState[targetCellScript.GetPosition().x, targetCellScript.GetPosition().y] = 1; 
         }
@@ -255,8 +264,7 @@ public class BoardController : MonoBehaviour
 
     public void SelectTile(Vector2Int targetTilePos)
     {
-        //verify is the tile is ocuppied, verifiy if it implements movable, verify state, if movable and interacable show moves
-        BoardCell targetCellScript = tiles[targetTilePos.x, targetTilePos.y].gameObject.GetComponent<BoardCell>();
+        //verify is the tile is ocuppied, verifiy if it implements movable, verify state, if movable and interacable show moves 
 
         
 
@@ -265,6 +273,7 @@ public class BoardController : MonoBehaviour
             //Player is selecting a piece
             case BoardState.Idle:
                 lastSelected = targetTilePos;
+                targetCellScript = tiles[targetTilePos.x, targetTilePos.y].gameObject.GetComponent<BoardCell>();
                 //check if occupied
                 if (!targetCellScript.IsEmpty())
                 {
@@ -278,27 +287,100 @@ public class BoardController : MonoBehaviour
                     }
                     else
                     {
+                        //Do nothing
                         return;
                     }
                 }
                 break;
             case BoardState.WaitingDestination:
-                //Tell piece to make a movement
+                //If player clikced in a valid space
+                if (validMoves.ContainsKey(targetTilePos))
+                {
+                    //Lock player interaction while piece moves, reset all layers of the cells
+                    OnLockPlayerInteraction?.Invoke();
 
-                //update tiles list
-                //update boardState
-                //Change to WaitingEndMove
+                    //Make Series of Moves
+                    validMoves.TryGetValue(targetTilePos, out MovePattern targetPattern);
+                    MakeMoves(targetCellScript, targetPattern);
+                    //Trafers the entity from the previews location to the new one
+                    TranferEntityBetweenCells(tiles[lastSelected.x, lastSelected.y].GetComponent<BoardCell>(), tiles[targetTilePos.x, targetTilePos.y].GetComponent<BoardCell>());
 
+
+                    //Change to WaitingEndMove // TODO TEST THIS, I THINK THAT WHEN IT ENDS MOVING IT WOULD IMIDIATLY GO TO DILE
+                    currentBoardState = BoardState.WaitingEndMove;
+                }
+                else
+                {
+                    //Do nothing
+                    return;
+                }
                 break;
             case BoardState.WaitingEndMove:
-                //Lock player interaction while piece moves, reset all layers of the cells
-                OnLockPlayerInteraction?.Invoke();
+                //Do nothing you are waiting the move to end, but it is good to have
+                //a space to impklement stuff that happens in this moment
+                //for example if we want to implement clickable powers while pieces move
                 break;
             default:
                 break;
         }
 
 
+    }
+
+    /// <summary>
+    /// given a boardCell and a series of moves, makes the piece in the boardCell make that series of moves
+    /// </summary>
+    /// <param name="targetCellScript"></param>
+    /// <param name="targetPattern"></param>
+    private void MakeMoves(BoardCell targetCellScript, MovePattern targetPattern)
+    {
+        //cell cannot be empty
+        if (!targetCellScript.IsEmpty())
+        {
+            IInteractable movablePiece = targetCellScript.GetBoardEntity().GetComponent<IInteractable>();
+            lastSelectedPiece = movablePiece;
+
+            movablePiece.OnEndInteraction += GoToIdle;
+
+            StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
+        }
+        else 
+        {
+            //This should not happen, but this cell is empty
+            Debug.LogError("The cell you are trtrying to execute 'Make moves' is empty");
+        }
+    }
+
+
+
+
+
+    /// <summary>
+    /// Transfer BoardEntity from one Board Cell to another
+    /// </summary>
+    /// <param name="gameObject"></param>
+    /// <param name="targetCellScript"></param>
+    protected void TranferEntityBetweenCells(BoardCell lastSelected, BoardCell nextSelected)
+    {
+        //change parent
+        lastSelected.GetBoardEntity().transform.parent = nextSelected.transform;
+
+        //removes last selected form its previous owner
+        lastSelected.SetOccupied(false);
+        BoardEntity targetBoardEntity = lastSelected.GetBoardEntity();
+        lastSelected.SetBoardEntity(null);
+        //Update boardState to notify it has an object there
+        boardState[lastSelected.GetPosition().x, lastSelected.GetPosition().y] = 0;
+
+
+        //Check if it is a capture here!
+
+        nextSelected.SetOccupied(true);
+        nextSelected.SetBoardEntity(targetBoardEntity);
+        //Set boardEntity cell as this one as well
+        targetBoardEntity.SetBoardCell(nextSelected);
+        //Update boardState to notify it has an object there
+        boardState[nextSelected.GetPosition().x, nextSelected.GetPosition().y] = 1;
     }
 
     /// <summary>
@@ -429,6 +511,20 @@ public class BoardController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// This resets the boardStateMachine, it is activated when the piece ends its
+    /// move + Behaviour Tree execution
+    /// </summary>
+    public void GoToIdle()
+    {
+
+        //reset last selected
+        lastSelectedPiece.OnEndInteraction -= GoToIdle;
+        //lastSelected = -Vector2Int.one;
+        targetCellScript = null;
+        lastSelectedPiece = null;
+        currentBoardState = BoardState.Idle;
+    }
 
     #region MoveCalculation
 
@@ -565,6 +661,8 @@ public class BoardController : MonoBehaviour
 
         Debug.Log(output);
     }
+
+    
 
 
 

@@ -7,15 +7,24 @@ using System.Collections;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
 using static UnityEngine.GraphicsBuffer;
+using System;
 
 public class PlayerPiece : Piece, IAdaptable, IInteractable
 {
     [SerializeField] protected PlayerPieceSettings playerSettings;// -->> filled in the editor
     [SerializeField] protected InteractState interactState  = InteractState.canInteract;
-    [SerializeField] protected float animationTime = 3.0f;
+    [SerializeField] protected float animationTime = 1.0f;
+
+    //Used for calculating movement
+    [SerializeField] protected Vector2Int deltaPos = -Vector2Int.one;
+
+    public event Action OnEndInteraction;
 
     void Start()
     {
+        //starts as own position
+        deltaPos = currentBoardCell.GetPosition();
+
         UpdateLayer();
     }
     void Update()
@@ -73,31 +82,56 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         }
     }
     //Continue from here later
-    public void DirectionalMove(Direction targetDirection)
+    public IEnumerator ExecuteMoves(List<Direction> moves)
     {
-        Vector2Int currentPos =   currentBoardCell.GetPosition();
-        Vector2Int nextPosition = GetNextPosition(currentPos, targetDirection);
+        //starts as own position
+        deltaPos = currentBoardCell.GetPosition();
+        foreach (Direction move in moves)
+        {
+            //uses deltaPos to accumulate the movement
+            yield return StartCoroutine(DirectionalMove(move));
+        }
+
+
+        //Notify everyone that is waiting that the movement + BT is done! 
+        //TODO Here it would launch and wait for the behaviour tree execution
+        //probably use co routines here
+        OnEndInteraction?.Invoke();
+    }
+
+
+    public IEnumerator DirectionalMove(Direction targetDirection)
+    {
+        Vector2Int nextPosition = GetNextPosition(deltaPos, targetDirection);
+        
+        Debug.Log("was in"+ deltaPos + "tried to make a move to " + nextPosition);
+        //Vector3 nextPosVec3 = new Vector3(nextPosition.x, this.gameObject.transform.position.y, nextPosition.y);
+
+        //this.gameObject.transform.position = nextPosVec3; //just to test
         //Wait until Object Move to that new position //TODO LATER BE THE FUNCITION  MoveAndExecuteBT
-        yield return StartCoroutine(MoveTo(currentPos, nextPosition, animationTime));
+        yield return StartCoroutine(MoveTo(deltaPos, nextPosition, animationTime));
+        deltaPos = nextPosition;
     }
 
 
     public IEnumerator MoveTo(Vector2Int currentPos, Vector2Int nextPosition, float timeToMove)
     {
+        Vector3 currentPosVec3 = new Vector3(currentPos.x, this.gameObject.transform.position.y, currentPos.y);//since logic is 2d but game is 3d it needs this convertion
+        Vector3 nextPosVec3 = new Vector3(nextPosition.x, this.gameObject.transform.position.y, nextPosition.y);//since logic is 2d but game is 3d it needs this convertion 
         float deltaTime = 0;
         while (deltaTime< timeToMove)
         {
             //where we are at the lerp
             float t = deltaTime / timeToMove;
 
-            this.gameObject.transform.position = Vector3.Lerp(currentPos.ConvertTo<Vector3>(), nextPosition.ConvertTo<Vector3>(), t);
+            this.gameObject.transform.position = Vector3.Lerp(currentPosVec3, nextPosVec3, t);
             deltaTime += Time.deltaTime;
             //wait For Next Frame
             yield return null;
         }
 
         // garantee to snap to nextPosition
-        this.gameObject.transform.position = nextPosition.ConvertTo<Vector3>();
+        this.gameObject.transform.position = nextPosVec3;
     }
 
     public InteractState CanInteract()
