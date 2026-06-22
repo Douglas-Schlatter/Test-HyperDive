@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 /// <summary>
 /// Every class that want to use the Behaviour Tree System must implement "Adaptable"
@@ -7,5 +8,7 @@ using UnityEngine;
 /// </summary>
 public interface IAdaptable
 {
+    //After a Behvaiour tree execution trigger this
+    public abstract event Action OnEndBehaviourTree;
     public BehaviourTreeListener GetBehaviourTreeListener();
 }

@@ -9,8 +9,8 @@ using System.Collections;
 /// </summary>
 public interface IInteractable
 {
-    //After the piece move, if it has a Behvaiour tree, adter move + BT
-    public abstract event Action OnEndInteraction;
+    //After the piece move, trigger this
+    public abstract event Action OnEndMove;
 
     public List<MovePattern> GetMovePatterns();
 

@@ -23,6 +23,8 @@ public class BoardController : MonoBehaviour
     [SerializeField]  protected Vector2Int lastSelected = -Vector2Int.one; // ---> usefull for debuging
     IInteractable lastSelectedPiece;
     BoardCell targetCellScript;
+    BoardEntity waitingToBeCaptured;
+    bool PendingPieceToBeCaptured = false;
 
     /// <summary>
     /// After validating possible moves from a piece, add all the moves that the player can make here
@@ -296,14 +298,29 @@ public class BoardController : MonoBehaviour
                 //If player clikced in a valid space
                 if (validMoves.ContainsKey(targetTilePos))
                 {
+                    //Last Selected BoardCell
+                    BoardCell lastCell = tiles[lastSelected.x, lastSelected.y].GetComponent<BoardCell>();
+                    //Next Selected BoardCell
+                    BoardCell nextCell = tiles[targetTilePos.x, targetTilePos.y].GetComponent<BoardCell>();
                     //Lock player interaction while piece moves, reset all layers of the cells
                     OnLockPlayerInteraction?.Invoke();
+                    //Check for colisions
+
+                    //Check if it is a capture here!
+                    //If the next cell has a something on it
+                    if (!nextCell.IsEmpty())
+                    {
+                        //Mark this for death
+                        waitingToBeCaptured = nextCell.GetBoardEntity();
+                        PendingPieceToBeCaptured = true;
+
+                    }
 
                     //Make Series of Moves
                     validMoves.TryGetValue(targetTilePos, out MovePattern targetPattern);
                     MakeMoves(targetCellScript, targetPattern);
                     //Trafers the entity from the previews location to the new one
-                    TranferEntityBetweenCells(tiles[lastSelected.x, lastSelected.y].GetComponent<BoardCell>(), tiles[targetTilePos.x, targetTilePos.y].GetComponent<BoardCell>());
+                    UpdateBoardState(lastCell, nextCell);
 
 
                     //Change to WaitingEndMove // TODO TEST THIS, I THINK THAT WHEN IT ENDS MOVING IT WOULD IMIDIATLY GO TO DILE
@@ -340,7 +357,16 @@ public class BoardController : MonoBehaviour
             IInteractable movablePiece = targetCellScript.GetBoardEntity().GetComponent<IInteractable>();
             lastSelectedPiece = movablePiece;
 
-            movablePiece.OnEndInteraction += GoToIdle;
+            //I could do this instanly, but i think it looks
+            //cleaner doing it as the piece gets to the new position
+            if (PendingPieceToBeCaptured)
+            {
+                movablePiece.OnEndMove += CapturePendingPiece;
+            }
+
+            movablePiece.OnEndMove += GoToIdle;
+
+
 
             StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
         }
@@ -360,7 +386,7 @@ public class BoardController : MonoBehaviour
     /// </summary>
     /// <param name="gameObject"></param>
     /// <param name="targetCellScript"></param>
-    protected void TranferEntityBetweenCells(BoardCell lastSelected, BoardCell nextSelected)
+    protected void UpdateBoardState(BoardCell lastSelected, BoardCell nextSelected)
     {
         //change parent
         lastSelected.GetBoardEntity().transform.parent = nextSelected.transform;
@@ -373,7 +399,7 @@ public class BoardController : MonoBehaviour
         boardState[lastSelected.GetPosition().x, lastSelected.GetPosition().y] = 0;
 
 
-        //Check if it is a capture here!
+
 
         nextSelected.SetOccupied(true);
         nextSelected.SetBoardEntity(targetBoardEntity);
@@ -381,6 +407,16 @@ public class BoardController : MonoBehaviour
         targetBoardEntity.SetBoardCell(nextSelected);
         //Update boardState to notify it has an object there
         boardState[nextSelected.GetPosition().x, nextSelected.GetPosition().y] = 1;
+    }
+
+    protected void CapturePendingPiece()
+    {
+        waitingToBeCaptured.GetCaptured();
+        //reset pending piece capture loop
+        PendingPieceToBeCaptured = false;
+        waitingToBeCaptured = null;
+        lastSelectedPiece.OnEndMove -= CapturePendingPiece;
+
     }
 
     /// <summary>
@@ -495,7 +531,13 @@ public class BoardController : MonoBehaviour
     {
         foreach (Vector2Int cell in positionToHighlight)
         {
-            tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
+            //If the tilepath that we are highlighting isn't already an end path,check so we don't delete end positions
+            if (!(tiles[cell.x, cell.y].gameObject.layer == LayerMask.NameToLayer(CONST_END_PATH_LAYER)))
+            {
+                //then mark him as a normal path
+                tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
+            }
+            
         }
 
         tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
@@ -519,7 +561,7 @@ public class BoardController : MonoBehaviour
     {
 
         //reset last selected
-        lastSelectedPiece.OnEndInteraction -= GoToIdle;
+        lastSelectedPiece.OnEndMove -= GoToIdle;
         //lastSelected = -Vector2Int.one;
         targetCellScript = null;
         lastSelectedPiece = null;

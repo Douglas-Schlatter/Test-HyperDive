@@ -18,15 +18,20 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     //Used for calculating movement
     [SerializeField] protected Vector2Int deltaPos = -Vector2Int.one;
 
-    public event Action OnEndInteraction;
+    public event Action OnEndMove;
+    public event Action OnEndBehaviourTree;
 
     void Start()
     {
         //starts as own position
         deltaPos = currentBoardCell.GetPosition();
+        OnEndMove += ExecuteBehaviourTree;
 
         UpdateLayer();
     }
+
+
+
     void Update()
     {
         
@@ -39,6 +44,10 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         UpdateLayer();
     }
 
+    protected void ExecuteBehaviourTree()
+    {
+        //throw new NotImplementedException();
+    }
     /// <summary>
     /// I am using color coding pieces by the render pipiline, depending of the layer
     /// a different color will appear
@@ -96,7 +105,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         //Notify everyone that is waiting that the movement + BT is done! 
         //TODO Here it would launch and wait for the behaviour tree execution
         //probably use co routines here
-        OnEndInteraction?.Invoke();
+        OnEndMove?.Invoke();
     }
 
 
