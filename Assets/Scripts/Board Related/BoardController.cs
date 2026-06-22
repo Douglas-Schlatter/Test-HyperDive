@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine.Android;
 using static PlayerPieceSettings;
+using static Helper;
 
 public class BoardController : MonoBehaviour
 {
@@ -13,8 +14,18 @@ public class BoardController : MonoBehaviour
     int boardSizeX, boardSizeY,cellSize; //TODO MAYBE REMOVE CELLSIZE LATTER
     [SerializeField] protected GameObject cellPrefab; // ---> filled manually in the editor
     protected GameObject[,] tiles;
-    [SerializeField] protected int[,] boardState; // ---> usefull for debuging  // TODO maybe will take it out later if only the cellScriptLogic is used
+    protected int[,] boardState; // ---> usefull for debuging  // TODO maybe will take it out later if only the cellScriptLogic is used
     [SerializeField] protected int entityCount;
+
+    //Move Related
+    [SerializeField]  protected Vector2Int lastSelected = -Vector2Int.one; // ---> usefull for debuging
+
+    /// <summary>
+    /// After validating possible moves from a piece, add all the moves that the player can make here
+    /// <br/>
+    /// later when player clicks on a piece access with the position of the move with O(1) complexity
+    /// </summary>
+    protected Dictionary<Vector2Int, MovePattern> validMoves = new Dictionary<Vector2Int, MovePattern>();
 
     //BoardState related
     [SerializeField] protected BoardState currentBoardState = BoardState.Idle;
@@ -25,6 +36,9 @@ public class BoardController : MonoBehaviour
     public const string CONST_SELECTED_LAYER = "SelectedHighlight";
     public const string CONST_PATH_LAYER = "PathHighlight";
     public const string CONST_END_PATH_LAYER = "EndPathHightLight";
+
+    //Event Related
+    public event Action OnLockPlayerInteraction, OnLockChoosePiece;
     private void Awake()
     {
         GetStartVaraibles();
@@ -203,6 +217,9 @@ public class BoardController : MonoBehaviour
         targetCellScript.SetPosition(posX, posY);
         targetCellScript.SetOccupied(false);
         targetCellScript.ResetMaterial();
+
+        OnLockPlayerInteraction += targetCellScript.ResetLayer;
+
         return targetCell;
 
     }
@@ -241,11 +258,13 @@ public class BoardController : MonoBehaviour
         //verify is the tile is ocuppied, verifiy if it implements movable, verify state, if movable and interacable show moves
         BoardCell targetCellScript = tiles[targetTilePos.x, targetTilePos.y].gameObject.GetComponent<BoardCell>();
 
+        
 
         switch (currentBoardState)
         {
             //Player is selecting a piece
             case BoardState.Idle:
+                lastSelected = targetTilePos;
                 //check if occupied
                 if (!targetCellScript.IsEmpty())
                 {
@@ -254,8 +273,8 @@ public class BoardController : MonoBehaviour
                     {
                         //if movable go WaintingForDestination state and show possible moves
                         ShowPossibleMoves(interactable.GetMovePatterns(), targetTilePos);
-                        //Lock player selecting new pieces
                         //Change to WaitingDestination
+                        currentBoardState = BoardState.WaitingDestination;
                     }
                     else
                     {
@@ -264,8 +283,16 @@ public class BoardController : MonoBehaviour
                 }
                 break;
             case BoardState.WaitingDestination:
+                //Tell piece to make a movement
+
+                //update tiles list
+                //update boardState
+                //Change to WaitingEndMove
+
                 break;
             case BoardState.WaitingEndMove:
+                //Lock player interaction while piece moves, reset all layers of the cells
+                OnLockPlayerInteraction?.Invoke();
                 break;
             default:
                 break;
@@ -291,13 +318,15 @@ public class BoardController : MonoBehaviour
     protected void ShowPattern(MovePattern pattern, Vector2Int startingPosition)
     {
 
-        
+        //initialize move pattern that will be saved on validMoves
+        MovePattern saveMovePattern = new MovePattern();
+        saveMovePattern.moves = new List<Direction>();
+
         int patternSize = pattern.moves.Count;
         Vector2Int nextPosition = startingPosition;
         List<Vector2Int> positionToHighlight = new List<Vector2Int>();
         for (int i = 0; i < patternSize; i++)
         {
-            //TODO LATER CHECK FOR OCUPING THE SAME SPACE RULES AND BEING CAPTURED RULES,maybe variable friendly fire
             //Check if the move is valid
             if(!NextMoveIsValid(nextPosition, pattern.moves[i]))
             {
@@ -307,6 +336,9 @@ public class BoardController : MonoBehaviour
 
             nextPosition = GetNextPosition(nextPosition, pattern.moves[i]);
             BoardCell nextCellScript = tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>();
+
+            //Save the move that you did to get to this position
+            saveMovePattern.moves.Add(pattern.moves[i]);
 
             //if this is the lastMove
             if (i == patternSize - 1)
@@ -318,12 +350,7 @@ public class BoardController : MonoBehaviour
                     if (nextCellScript.GetBoardEntity().CanBeCapturedByPlayer())
                     {
                         //if there is a piece here and it can be captured this is the end of this pattern
-                        foreach (Vector2Int cell in positionToHighlight)
-                        {
-                            tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
-                        }
-
-                        tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+                        HighlightAndUpdateValidMoves(nextPosition, positionToHighlight, saveMovePattern);
 
                         return;
                     }
@@ -337,12 +364,7 @@ public class BoardController : MonoBehaviour
                 else 
                 {
                     //Nothing here, just the end of the path, highlight all the stored path + last location
-                    foreach (Vector2Int cell in positionToHighlight)
-                    {
-                        tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
-                    }
-
-                    tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+                    HighlightAndUpdateValidMoves(nextPosition, positionToHighlight, saveMovePattern);
 
                     return;
                 }
@@ -359,12 +381,7 @@ public class BoardController : MonoBehaviour
                     if (nextCellScript.GetBoardEntity().CanBeCapturedByPlayer())
                     {
                         //if there is a piece here and it can be captured this is the end of this pattern
-                        foreach (Vector2Int cell in positionToHighlight)
-                        {
-                            tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
-                        }
-
-                        tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+                        HighlightAndUpdateValidMoves(nextPosition, positionToHighlight, saveMovePattern);
 
                         return;
                     }
@@ -380,71 +397,43 @@ public class BoardController : MonoBehaviour
                     //it is just an emprty space in the path, so add this location to be highlighted later
                     //if all goes well
                     positionToHighlight.Add(nextPosition);
+
                 }
 
             }
         }
     }
 
-
-    #region MoveCalculation
-    protected void MakeMoves()
-    { }
-
     /// <summary>
-    /// Given an original position and a direction to go to, returns the new position
+    /// As well as higlighting paths, adds the last path position in the dicionary of valid postions to click
     /// </summary>
-    /// <returns></returns>
-    protected Vector2Int GetNextPosition(Vector2Int startingPosition, Direction direction)
+    /// <param name="nextPosition"></param>
+    /// <param name="positionToHighlight"></param>
+    protected void HighlightAndUpdateValidMoves(Vector2Int nextPosition, List<Vector2Int> positionToHighlight, MovePattern saveMovePattern)
     {
-        switch (direction)
+        foreach (Vector2Int cell in positionToHighlight)
         {
-            //Move Up
-            case Direction.N:
-                return new Vector2Int(startingPosition.x, startingPosition.y + 1);
-                break;
-
-            //Move UpRight
-            case Direction.NW:
-                return new Vector2Int(startingPosition.x - 1, startingPosition.y + 1);
-                break;
-
-            //Move UpLeft
-            case Direction.NL:
-                return new Vector2Int(startingPosition.x + 1, startingPosition.y + 1); 
-                break;
-
-            //Move Left
-            case Direction.W:
-                return new Vector2Int(startingPosition.x - 1, startingPosition.y);
-                break;
-
-            //Move Right
-            case Direction.L:
-                return new Vector2Int(startingPosition.x + 1, startingPosition.y);
-                break;
-
-            //Move DownLeft
-            case Direction.WS:
-                return new Vector2Int(startingPosition.x - 1, startingPosition.y-1);
-                break;
-
-            //Move DownRight
-            case Direction.LS:
-                return new Vector2Int(startingPosition.x + 1, startingPosition.y - 1);
-                break;
-
-            //Move Down
-            case Direction.S:
-                return new Vector2Int(startingPosition.x, startingPosition.y - 1);
-                break;
-            default:
-                return new Vector2Int(startingPosition.x, startingPosition.y);
-                break;
-
+            tiles[cell.x, cell.y].GetComponent<BoardCell>().HighLight(CONST_PATH_LAYER);
         }
 
+        tiles[nextPosition.x, nextPosition.y].GetComponent<BoardCell>().HighLight(CONST_END_PATH_LAYER);
+        
+        //If this position wasn't already added
+        if (!validMoves.ContainsKey(nextPosition))
+        {
+            //Co relates this end position to this series of moves
+            validMoves.Add(nextPosition, saveMovePattern);
+        }
+       
+
+
     }
+
+
+    #region MoveCalculation
+
+
+
 
     /// <summary>
     /// Given an original position and a direction to go to, return true if it is a valid position in the board

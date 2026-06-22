@@ -10,6 +10,8 @@ public interface IInteractable
     
     public List<MovePattern> GetMovePatterns();
 
+    public void DirectionalMove(Direction targetDirection);
+
     public InteractState CanInteract();
 
     public enum InteractState

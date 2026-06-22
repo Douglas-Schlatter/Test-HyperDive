@@ -2,12 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using static IInteractable;
 using static PlayerPieceSettings;
+using static Helper;
+using System.Collections;
+using UnityEngine.Rendering;
+using Unity.VisualScripting;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerPiece : Piece, IAdaptable, IInteractable
 {
     [SerializeField] protected PlayerPieceSettings playerSettings;// -->> filled in the editor
     [SerializeField] protected InteractState interactState  = InteractState.canInteract;
-
+    [SerializeField] protected float animationTime = 3.0f;
 
     void Start()
     {
@@ -67,6 +72,33 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
             child.gameObject.layer = LayerMask.NameToLayer(targetLayer);
         }
     }
+    //Continue from here later
+    public void DirectionalMove(Direction targetDirection)
+    {
+        Vector2Int currentPos =   currentBoardCell.GetPosition();
+        Vector2Int nextPosition = GetNextPosition(currentPos, targetDirection);
+        //Wait until Object Move to that new position //TODO LATER BE THE FUNCITION  MoveAndExecuteBT
+        yield return StartCoroutine(MoveTo(currentPos, nextPosition, animationTime));
+    }
+
+
+    public IEnumerator MoveTo(Vector2Int currentPos, Vector2Int nextPosition, float timeToMove)
+    {
+        float deltaTime = 0;
+        while (deltaTime< timeToMove)
+        {
+            //where we are at the lerp
+            float t = deltaTime / timeToMove;
+
+            this.gameObject.transform.position = Vector3.Lerp(currentPos.ConvertTo<Vector3>(), nextPosition.ConvertTo<Vector3>(), t);
+            deltaTime += Time.deltaTime;
+            //wait For Next Frame
+            yield return null;
+        }
+
+        // garantee to snap to nextPosition
+        this.gameObject.transform.position = nextPosition.ConvertTo<Vector3>();
+    }
 
     public InteractState CanInteract()
     {
@@ -88,4 +120,6 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
         return false;
     }
+
+
 }

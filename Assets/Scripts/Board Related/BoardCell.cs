@@ -2,6 +2,7 @@ using System;
 using System.Net.Sockets;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static BoardController;
 
 public class BoardCell : MonoBehaviour
 {
@@ -43,6 +44,14 @@ public class BoardCell : MonoBehaviour
         occupied = false;
     }
 
+    public void ResetLayer()
+    {
+        this.gameObject.layer = LayerMask.NameToLayer(CONST_DEFAULT_TILE_LAYER);
+    }
+
+
+
+    #region Gets_and_sets
     public void SetBoardEntity(BoardEntity targetEntity)
     {
         //Unsubrcribe from the previews entity
@@ -60,9 +69,6 @@ public class BoardCell : MonoBehaviour
     {
         occupied = targetBool;
     }
-
-
-    #region Gets_and_sets
     public void SetPosition(int x, int y)
     {
         posX = x;

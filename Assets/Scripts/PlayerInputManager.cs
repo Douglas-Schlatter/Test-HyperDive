@@ -41,6 +41,7 @@ public class PlayerInputManager : MonoBehaviour
         {
             RaycastHit info;
             Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
+
             //If we clicked in a tile in BoardTile
             if (Physics.Raycast(ray, out info, 100, LayerMask.GetMask(CONST_DEFAULT_TILE_LAYER)))
             {
@@ -69,6 +70,16 @@ public class PlayerInputManager : MonoBehaviour
             { 
                 //it could be usefull to add something for when the raycast doesn't
                 //hit any useful layer, like unhighlight everything and canceling a move
+            }
+
+            //If we clicked on a END_PATH tile
+            if (Physics.Raycast(ray, out info, 100, LayerMask.GetMask(CONST_END_PATH_LAYER)))
+            {
+                Vector2Int hitPos = boardController.GetTileIndex(info.collider.gameObject);
+
+                //Reset current selected
+                currentSelected = -Vector2Int.one;
+                boardController.SelectTile(hitPos);
             }
         }
     }

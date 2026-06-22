@@ -17,4 +17,5 @@ public class PlayerPieceSettings : ScriptableObject
         public List<Direction> moves;
     }
     [SerializeField] public List<MovePattern> movePatterns;
+    
 }
