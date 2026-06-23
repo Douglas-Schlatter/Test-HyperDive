@@ -266,9 +266,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93001eb23f6563242997df06fe12ab4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentBoardCell: {fileID: 0}
   playerSettings: {fileID: 11400000, guid: 97ba8fcd56999f74bb6852bf2bf8e99a, type: 2}
   interactState: 0
-  animationTime: 1
+  animationTime: 0.5
+  deltaPos: {x: -1, y: -1}
 --- !u!1 &7905823314839675635
 GameObject:
   m_ObjectHideFlags: 0

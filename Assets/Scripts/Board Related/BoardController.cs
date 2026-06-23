@@ -571,6 +571,11 @@ public class BoardController : MonoBehaviour
         currentBoardState = BoardState.Idle;
     }
 
+    public BoardState GetBoardState()
+    {
+        return currentBoardState;
+    }
+
     #region MoveCalculation
 
 
@@ -718,7 +723,7 @@ public class BoardController : MonoBehaviour
     /// <br/>
     /// WaitingEndMove -->Waits for notify from the piece that ended move + behaviour tree execution
     /// </summary>
-    protected enum BoardState
+    public enum BoardState
     {
         Idle, WaitingDestination, WaitingEndMove //In the future here i would implement "EnemyTurn" state to make the enemies turn in the game
     }
