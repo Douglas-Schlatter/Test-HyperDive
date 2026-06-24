@@ -164,5 +164,8 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         return false;
     }
 
-
+    public BoardEntity GetBoardEntity()
+    {
+        return this;
+    }
 }

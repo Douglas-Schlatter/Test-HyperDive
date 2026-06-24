@@ -10,5 +10,7 @@ public interface IAdaptable
 {
     //After a Behvaiour tree execution trigger this
     public abstract event Action OnEndBehaviourTree;
+
+    public BoardEntity GetBoardEntity();
     public BehaviourTreeListener GetBehaviourTreeListener();
 }
