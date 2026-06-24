@@ -8,18 +8,28 @@ using UnityEngine.Rendering;
 using Unity.VisualScripting;
 using static UnityEngine.GraphicsBuffer;
 using System;
+using JetBrains.Annotations;
+using UnityEditor.SearchService;
 
 public class PlayerPiece : Piece, IAdaptable, IInteractable
 {
-    [SerializeField] protected PlayerPieceSettings playerSettings;// -->> filled in the editor
+    [SerializeField] protected PlayerPieceSettings pieceSettings;// -->> filled in the editor
     [SerializeField] protected InteractState interactState  = InteractState.canInteract;
     [SerializeField] protected float animationTime = 1.0f;
 
     //Used for calculating movement
     [SerializeField] protected Vector2Int deltaPos = -Vector2Int.one;
 
+    //Behaviour tree related
+    public BehaviourListener behaviourListener;
+
     public event Action OnEndMove;
     public event Action OnEndBehaviourTree;
+
+    void Awake()
+    {
+
+    }
 
     void Start()
     {
@@ -28,6 +38,15 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         OnEndMove += ExecuteBehaviourTree;
 
         UpdateLayer();
+
+        behaviourListener = UnityEngine.Object.FindFirstObjectByType<BehaviourListener>();
+        if (behaviourListener == null)
+        {
+            Debug.LogError("The scene must have an object with a BehaviourListener");
+        }
+
+        pieceSettings.InitializeBehaviourTree(behaviourListener, this);
+        //pieceSettings
     }
 
 
@@ -106,8 +125,18 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         //TODO Here it would launch and wait for the behaviour tree execution
         //probably use co routines here
         OnEndMove?.Invoke();
+
+        yield return StartCoroutine( CallBehaviourTree());
+        //TODO fazer voltar a poder ter interações so depois daqui depois
+        //TODO MAKE RESET BEHAVIOUR TREE AFTER ENDING EXECUTING IT
+        OnEndBehaviourTree?.Invoke();
     }
 
+    public IEnumerator CallBehaviourTree()
+    {
+        this.pieceSettings.TestBHT();
+        yield return StartCoroutine(pieceSettings.RunBehaviourTree());
+    }
 
     public IEnumerator DirectionalMove(Direction targetDirection)
     {
@@ -148,7 +177,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         return interactState;
     }
 
-    public BehaviourTreeListener GetBehaviourTreeListener()
+    public BehaviourListener GetBehaviourTreeListener()
     {
         //Todo 
         throw new System.NotImplementedException();
@@ -156,7 +185,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
 
     public List<MovePattern> GetMovePatterns()
     {
-        return playerSettings.movePatterns;
+        return pieceSettings.movePatterns;
     }
 
     public override bool CanBeCapturedByPlayer()

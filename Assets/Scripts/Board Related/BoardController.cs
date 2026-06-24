@@ -584,7 +584,7 @@ public class BoardController : MonoBehaviour
     /// <summary>
     /// Given an original position and a direction to go to, return true if it is a valid position in the board
     /// </summary>
-    protected bool NextMoveIsValid(Vector2Int startingPosition, Direction direction)
+    public bool NextMoveIsValid(Vector2Int startingPosition, Direction direction)
     {
         //TODO LATER CHECK FOR OCUPING THE SAME SPACE RULES AND BEING CAPTURED RULES
         switch (direction)
@@ -712,8 +712,49 @@ public class BoardController : MonoBehaviour
         Debug.Log(output);
     }
 
-    
+    //BehaviourRelated
+    #region Behaviour_Related
+    //TODO REVISE THIS FUNCTION THAT I DID IN THE HURRY, ALSO ADD FRINDLY FIRE ON IT VAR
+    public void MovedByBehaviour(Vector2Int currentPos, Direction targetDirection)
+    {
+        if (NextMoveIsValid(currentPos, targetDirection))
+        {
+            //TODO CHECK IF CAN BE CAPTURED BEFORE MOVING
 
+            //Last Selected BoardCell
+            BoardCell lastCell = tiles[currentPos.x, currentPos.y].GetComponent<BoardCell>();
+            //Next Selected BoardCell
+            Vector2Int nextPos = GetNextPosition(currentPos, targetDirection);
+            BoardCell nextCell = tiles[nextPos.x, nextPos.y].GetComponent<BoardCell>();
+
+            //Check for colisions
+
+            //Check if it is a capture here!
+            //If the next cell has a something on it
+            /*
+                         if (!nextCell.IsEmpty())
+            {
+                //Mark this for death
+                waitingToBeCaptured = nextCell.GetBoardEntity();
+                PendingPieceToBeCaptured = true;
+
+            }
+             
+                
+             */
+
+
+            MovePattern targetPattern = new MovePattern();
+            targetPattern.moves = new List<Direction>();
+            targetPattern.moves.Add(targetDirection);
+            MakeMoves(lastCell, targetPattern);
+            //Trafers the entity from the previews location to the new one
+            UpdateBoardState(lastCell, nextCell);
+
+
+        }
+    }
+    #endregion
 
 
     /// <summary>

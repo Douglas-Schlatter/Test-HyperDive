@@ -265,7 +265,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentBoardCell: {fileID: 0}
-  playerSettings: {fileID: 11400000, guid: 1148171b280f2ff4c827431b77b439d7, type: 2}
+  pieceSettings: {fileID: 11400000, guid: 1148171b280f2ff4c827431b77b439d7, type: 2}
   interactState: 0
   animationTime: 0.5
   deltaPos: {x: -1, y: -1}
+  behaviourListener: {fileID: 0}

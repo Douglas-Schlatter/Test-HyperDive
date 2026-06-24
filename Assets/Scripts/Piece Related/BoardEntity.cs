@@ -18,6 +18,10 @@ public abstract class BoardEntity : MonoBehaviour
     {
         return currentBoardCell;
     }
+    public Vector2Int GetPosition()
+    {
+        return GetBoardCell().GetPosition();
+    }
 
     public void SetBoardCell(BoardCell targetCell)
     {

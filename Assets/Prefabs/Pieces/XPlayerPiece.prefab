@@ -157,10 +157,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentBoardCell: {fileID: 0}
-  playerSettings: {fileID: 11400000, guid: f6d4e0cdb970fd74bb50014b823da9fb, type: 2}
+  pieceSettings: {fileID: 11400000, guid: f6d4e0cdb970fd74bb50014b823da9fb, type: 2}
   interactState: 0
   animationTime: 0.5
   deltaPos: {x: -1, y: -1}
+  behaviourListener: {fileID: 0}
 --- !u!1 &7905823314839675635
 GameObject:
   m_ObjectHideFlags: 0
