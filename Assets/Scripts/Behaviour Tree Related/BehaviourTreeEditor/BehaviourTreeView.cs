@@ -3,6 +3,7 @@ using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 using UnityEditor;
 using System;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class BehaviourTreeView: GraphView
 {
@@ -79,15 +80,42 @@ public class BehaviourTreeView: GraphView
     {
         this.currentBhTree = bhTree;
 
+        graphViewChanged -= OnGraphViewChanged;
+
         //Clear board
         DeleteElements(graphElements);
 
+        graphViewChanged += OnGraphViewChanged;
         foreach (Node node in currentBhTree.nodes)
         {
             CreateNodeView(node);
         }
     }
 
+
+    /// <summary>
+    /// This is how we check if someting changed in the graph
+    /// </summary>
+    /// <param name="graphViewChange"></param>
+    /// <returns></returns>
+    private GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
+    {
+        
+        if (graphViewChange.elementsToRemove != null)
+        {
+            //for each obj to remove try casting it to a node view
+            graphViewChange.elementsToRemove.ForEach(elem =>
+            {
+                NodeView nodeView = elem as NodeView;
+                if (nodeView != null)
+                {
+                    currentBhTree.DeleteNode(nodeView.treeNode);
+                }
+
+            });
+        }
+        return graphViewChange;
+    }
 
     /// <summary>
     /// Creates a node from the passed type

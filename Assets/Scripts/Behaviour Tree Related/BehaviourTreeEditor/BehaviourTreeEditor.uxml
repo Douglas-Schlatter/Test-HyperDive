@@ -10,7 +10,7 @@
         </engine:VisualElement>
         <engine:VisualElement name="RightPanel" style="flex-grow: 1;">
             <engine:Label text="Behaviour Tree View" style="background-color: rgb(37, 37, 37); color: rgb(244, 244, 244);" />
-            <BehaviourTreeView style="flex-grow: 1;" />
+            <BehaviourTreeView focusable="true" style="flex-grow: 1;" />
         </engine:VisualElement>
     </SplitView>
 </engine:UXML>

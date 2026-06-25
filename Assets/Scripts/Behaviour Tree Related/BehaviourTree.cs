@@ -50,6 +50,7 @@ public class BehaviourTree : ScriptableObject
 
     public void DeleteNode(Node targetNode)
     {
+        Debug.Log("Tryed to delete");
         nodes.Remove(targetNode);
         AssetDatabase.RemoveObjectFromAsset(targetNode);
         AssetDatabase.SaveAssets();
