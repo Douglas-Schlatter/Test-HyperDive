@@ -39,6 +39,8 @@ public class BehaviourTreeEditor : EditorWindow
         //From the root searches for a bhTreeView
         bhTreeView = root.Q<BehaviourTreeView>();
         inspectorView = root.Q<InspectorView>();
+
+        OnSelectionChange();
     }
 
     private void OnSelectionChange()

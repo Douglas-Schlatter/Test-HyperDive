@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fbd023a4fc5a4c44abc993deeca6b3b3, type: 3}
-  m_Name: Base BehaviourTree
+  m_Name: Base BehaviourTree 2
   m_EditorClassIdentifier: 
   rootNode: {fileID: 0}
   treeState: 0

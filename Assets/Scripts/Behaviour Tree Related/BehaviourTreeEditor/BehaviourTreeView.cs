@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 using UnityEditor;
 using System;
 using static UnityEditor.Experimental.GraphView.GraphView;
+using System.Linq;
+using System.Collections.Generic;
 
 public class BehaviourTreeView: GraphView
 {
@@ -86,10 +88,34 @@ public class BehaviourTreeView: GraphView
         DeleteElements(graphElements);
 
         graphViewChanged += OnGraphViewChanged;
+
+        //Creating nodeviews
         foreach (Node node in currentBhTree.nodes)
         {
             CreateNodeView(node);
         }
+
+
+        //Creates edges by getting its parent and child, and then connecting them
+        foreach (Node parentNode in currentBhTree.nodes)
+        {
+            var children = currentBhTree.GetChildren(parentNode);
+            if (children.Count > 0)
+            {
+                foreach (Node childNode in children)
+                {
+                    if (childNode != null)
+                    {
+                        NodeView parentView = FindNodeView(parentNode);
+                        NodeView childView = FindNodeView(childNode);
+
+                        Edge newEdge = parentView.output.ConnectTo(childView.input);
+                        AddElement(newEdge);
+                    }
+                }
+            }
+        }
+
     }
 
 
@@ -103,17 +129,39 @@ public class BehaviourTreeView: GraphView
         
         if (graphViewChange.elementsToRemove != null)
         {
-            //for each obj to remove try casting it to a node view
+            //Get the list of things to be removed
             graphViewChange.elementsToRemove.ForEach(elem =>
             {
+                //If it is a node that we are deleting
                 NodeView nodeView = elem as NodeView;
                 if (nodeView != null)
                 {
                     currentBhTree.DeleteNode(nodeView.treeNode);
                 }
+                //If it is an edge that we are deleting
+                Edge edge = elem as Edge;
+                if (edge != null)
+                {
+                    NodeView parentView = edge.output.node as NodeView;
+                    NodeView childView = edge.input.node as NodeView;
+                    currentBhTree.RemoveChild(parentView.treeNode, childView.treeNode);
+                }
 
             });
         }
+
+        //Detect when creating an edge add it
+        if (graphViewChange.edgesToCreate != null)
+        {
+            foreach (var edge in graphViewChange.edgesToCreate)
+            {
+                NodeView parentView = edge.output.node as NodeView;
+                NodeView childView = edge.input.node as NodeView;
+                currentBhTree.AddChild(parentView.treeNode, childView.treeNode);
+            }
+        }
+
+
         return graphViewChange;
     }
 
@@ -131,5 +179,24 @@ public class BehaviourTreeView: GraphView
     {
         NodeView nodeView = new NodeView(node);
         AddElement(nodeView);
+    }
+
+    /// <summary>
+    /// From an architeture bhTreeNode get its equivalant NodeView in the GUID
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
+    NodeView FindNodeView(Node node)
+    {
+        return GetNodeByGuid(node.guid) as NodeView;
+    }
+    public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
+    {
+        //Itarete over every element in the list garantees that inpu with input can't
+        //connect to each other, same for out with out.
+        return ports.ToList().Where(endPort =>
+        endPort.direction != startPort.direction &&
+        endPort.node != startPort.node
+        ).ToList();
     }
 }

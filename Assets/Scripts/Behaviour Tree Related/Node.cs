@@ -6,6 +6,7 @@ public abstract class Node : ScriptableObject
 {
     //UI related
     public string guid;
+    public Vector2 positionInGuid;
 
     //Game Context Related
     public BehaviourListener behaviourListener;

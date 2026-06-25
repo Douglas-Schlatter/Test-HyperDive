@@ -58,6 +58,44 @@ public class BehaviourTree : ScriptableObject
 
 
 
+
+
+    public void AddChild(Node parent, Node child)
+    {
+        //TODO if have time do it with reflection
+        //Try cast it as Decorator
+        DecoratorNode decoratorNode = parent as DecoratorNode;
+        if (decoratorNode)
+        {
+            decoratorNode.child = child;
+        }
+
+        CompositeNode compositeNode = parent as CompositeNode;
+        if (compositeNode)
+        {
+            compositeNode.children.Add(child);
+        }
+    }
+
+    public void RemoveChild(Node parent, Node child)
+    {
+
+        //TODO if have time do it with reflection
+        //Try cast it as Decorator
+        DecoratorNode decoratorNode = parent as DecoratorNode;
+        if (decoratorNode)
+        {
+            decoratorNode.child = null;
+        }
+
+        CompositeNode compositeNode = parent as CompositeNode;
+        if (compositeNode)
+        {
+            compositeNode.children.Remove(child);
+        }
+
+    }
+
     public List<Node> GetChildren(Node parent)
     {
         List<Node> children = new List<Node>();
