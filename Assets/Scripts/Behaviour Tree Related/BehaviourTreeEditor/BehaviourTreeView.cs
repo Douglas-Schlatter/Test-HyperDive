@@ -1,13 +1,26 @@
 using UnityEngine;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
+using UnityEditor;
 
 public class BehaviourTreeView: GraphView
 {
     public new class UxmlFactory : UxmlFactory<BehaviourTreeView, GraphView.UxmlTraits> { }
 
     public BehaviourTreeView()
-    { 
-        
+    {
+        //Add grid
+        Insert(0, new GridBackground());
+
+        //Basic manipulators
+        this.AddManipulator(new ContentZoomer());
+        this.AddManipulator(new ContentDragger());
+        this.AddManipulator(new SelectionDragger());
+        this.AddManipulator(new RectangleSelector());
+
+
+
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Behaviour Tree Related/BehaviourTreeEditor/BehaviourTreeEditor.uss");
+        styleSheets.Add(styleSheet);
     }
 }

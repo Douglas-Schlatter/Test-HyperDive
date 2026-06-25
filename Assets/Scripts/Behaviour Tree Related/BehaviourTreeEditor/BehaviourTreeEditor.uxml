@@ -1,4 +1,16 @@
-<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Scripts/Behaviour%20Tree%20Related/BehaviourTreeEditor/BehaviourTreeEditor.uss?fileID=7433441132597879392&amp;guid=554a682b545c46e4380dbdd9cc0f2226&amp;type=3#BehaviourTreeEditor" />
-    <BehaviourTreeView />
+    <editor:Toolbar>
+        <editor:ToolbarMenu text="Assets" />
+    </editor:Toolbar>
+    <SplitView fixed-pane-initial-dimension="200">
+        <engine:VisualElement name="LeftPanel" style="flex-grow: 1;">
+            <InspectorView style="background-color: rgba(20, 20, 20, 0);" />
+            <engine:Label text="Inspector" style="background-image: none; background-color: rgb(37, 37, 37); display: flex; visibility: visible; overflow: visible; opacity: 1; flex-grow: 0; color: rgb(247, 247, 247);" />
+        </engine:VisualElement>
+        <engine:VisualElement name="RightPanel" style="flex-grow: 1;">
+            <engine:Label text="Behaviour Tree View" style="background-color: rgb(37, 37, 37); color: rgb(244, 244, 244);" />
+            <BehaviourTreeView style="flex-grow: 1;" />
+        </engine:VisualElement>
+    </SplitView>
 </engine:UXML>
