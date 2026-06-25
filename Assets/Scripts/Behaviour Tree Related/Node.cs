@@ -4,6 +4,9 @@ using UnityEngine;
 
 public abstract class Node : ScriptableObject
 {
+    //UI related
+    public string guid;
+
     //Game Context Related
     public BehaviourListener behaviourListener;
     public IAdaptable currentAdaptable;

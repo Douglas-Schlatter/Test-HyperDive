@@ -7,6 +7,10 @@ public class BehaviourTreeEditor : EditorWindow
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
 
+    //sub windows
+    BehaviourTreeView bhTreeView;
+    InspectorView inspectorView;
+
     [MenuItem("BehaviourTreeEditor/Editor")]
     public static void OpenWindow()
     {
@@ -31,5 +35,20 @@ public class BehaviourTreeEditor : EditorWindow
         //Add StyleSheet
         var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Behaviour Tree Related/BehaviourTreeEditor/BehaviourTreeEditor.uss");
         root.styleSheets.Add(styleSheet);
+
+        //From the root searches for a bhTreeView
+        bhTreeView = root.Q<BehaviourTreeView>();
+        inspectorView = root.Q<InspectorView>();
+    }
+
+    private void OnSelectionChange()
+    {
+        //Try cas the selection thing as a behaviour tree
+        BehaviourTree bhTree = Selection.activeObject as BehaviourTree;
+
+        if (bhTree)
+        {
+            bhTreeView.PopulateView(bhTree);
+        }
     }
 }
