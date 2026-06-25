@@ -24,7 +24,7 @@ public class BoardController : MonoBehaviour
     IInteractable lastSelectedPiece;
     BoardCell targetCellScript;
     BoardEntity waitingToBeCaptured;
-    bool PendingPieceToBeCaptured = false;
+    bool pendingPieceToBeCaptured = false;
 
     /// <summary>
     /// After validating possible moves from a piece, add all the moves that the player can make here
@@ -312,7 +312,7 @@ public class BoardController : MonoBehaviour
                     {
                         //Mark this for death
                         waitingToBeCaptured = nextCell.GetBoardEntity();
-                        PendingPieceToBeCaptured = true;
+                        pendingPieceToBeCaptured = true;
 
                     }
 
@@ -359,7 +359,7 @@ public class BoardController : MonoBehaviour
 
             //I could do this instanly, but i think it looks
             //cleaner doing it as the piece gets to the new position
-            if (PendingPieceToBeCaptured)
+            if (pendingPieceToBeCaptured)
             {
                 movablePiece.OnEndMove += CapturePendingPiece;
             }
@@ -413,7 +413,7 @@ public class BoardController : MonoBehaviour
     {
         waitingToBeCaptured.GetCaptured();
         //reset pending piece capture loop
-        PendingPieceToBeCaptured = false;
+        pendingPieceToBeCaptured = false;
         waitingToBeCaptured = null;
         lastSelectedPiece.OnEndMove -= CapturePendingPiece;
 
@@ -715,6 +715,15 @@ public class BoardController : MonoBehaviour
     //BehaviourRelated
     #region Behaviour_Related
     //TODO REVISE THIS FUNCTION THAT I DID IN THE HURRY, ALSO ADD FRINDLY FIRE ON IT VAR
+    /// <summary>
+    /// This is equivalant to a normal move, but made by a behaviour
+    /// <br/>
+    /// behaviours can have custom situations happening when moving (like allowing friendly fire)
+    /// <br/>
+    /// so here is the space to implement it
+    /// </summary>
+    /// <param name="currentPos"></param>
+    /// <param name="targetDirection"></param>
     public void MovedByBehaviour(Vector2Int currentPos, Direction targetDirection)
     {
         if (NextMoveIsValid(currentPos, targetDirection))
@@ -727,32 +736,42 @@ public class BoardController : MonoBehaviour
             Vector2Int nextPos = GetNextPosition(currentPos, targetDirection);
             BoardCell nextCell = tiles[nextPos.x, nextPos.y].GetComponent<BoardCell>();
 
+            
+
             //Check for colisions
 
             //Check if it is a capture here!
             //If the next cell has a something on it
-            /*
-                         if (!nextCell.IsEmpty())
+
+
+
+            if (!nextCell.IsEmpty())
             {
-                //Mark this for death
-                waitingToBeCaptured = nextCell.GetBoardEntity();
-                PendingPieceToBeCaptured = true;
+                //This implementation allows friendly fire when moving with behaviour
+                if (nextCell.GetBoardEntity().CanBeCaptured())
+                {
+                    //Mark this for death
+                    waitingToBeCaptured = nextCell.GetBoardEntity();
+                    pendingPieceToBeCaptured = true;
+                    MakeBehaviourMove(targetDirection, lastCell, nextCell);
+                }
 
             }
-             
-                
-             */
-
-
-            MovePattern targetPattern = new MovePattern();
-            targetPattern.moves = new List<Direction>();
-            targetPattern.moves.Add(targetDirection);
-            MakeMoves(lastCell, targetPattern);
-            //Trafers the entity from the previews location to the new one
-            UpdateBoardState(lastCell, nextCell);
-
-
+            else
+            {
+                MakeBehaviourMove(targetDirection, lastCell, nextCell);
+            }
         }
+    }
+
+    protected void MakeBehaviourMove(Direction targetDirection, BoardCell lastCell, BoardCell nextCell)
+    {
+        MovePattern targetPattern = new MovePattern();
+        targetPattern.moves = new List<Direction>();
+        targetPattern.moves.Add(targetDirection);
+        MakeMoves(lastCell, targetPattern);
+        //Trafers the entity from the previews location to the new one
+        UpdateBoardState(lastCell, nextCell);
     }
     #endregion
 

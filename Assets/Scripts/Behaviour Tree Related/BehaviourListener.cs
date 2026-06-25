@@ -1,6 +1,11 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Responsible for responding to calls from the behaviour tree, it can be just calls for information 
+/// <br/>
+/// or calls for actions
+/// </summary>
 public class BehaviourListener : MonoBehaviour
 {
     protected BoardController boardController;
