@@ -10,6 +10,7 @@ using static UnityEngine.GraphicsBuffer;
 using System;
 using JetBrains.Annotations;
 using UnityEditor.SearchService;
+using System.Linq;
 
 public class PlayerPiece : Piece, IAdaptable, IInteractable
 {
@@ -35,7 +36,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
         //starts as own position
         deltaPos = currentBoardCell.GetPosition();
-        OnEndMove += ExecuteBehaviourTree;
+        //OnEndMove += ExecuteBehaviourTree;
 
         UpdateLayer();
 
@@ -63,10 +64,6 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         UpdateLayer();
     }
 
-    protected void ExecuteBehaviourTree()
-    {
-        //throw new NotImplementedException();
-    }
     /// <summary>
     /// I am using color coding pieces by the render pipiline, depending of the layer
     /// a different color will appear
@@ -109,7 +106,37 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
             child.gameObject.layer = LayerMask.NameToLayer(targetLayer);
         }
     }
-    //Continue from here later
+
+    /// <summary>
+    /// Activate this piece behaviour tree
+    /// </summary>
+    /// <param name="moves"></param>
+    /// <returns></returns>
+    public IEnumerator ExecuteBehaviourTree()
+    {
+
+        yield return StartCoroutine( CallBehaviourTree());
+        //TODO fazer voltar a poder ter interações so depois daqui depois
+        OnEndBehaviourTree?.Invoke();
+        //If go to idle was subscribed to this piece through OneEndBehaviour
+        //Make it unsubscribe from it
+        if (OnEndBehaviourTree != null) //Code Made with AI
+        {
+            foreach (Delegate d in OnEndBehaviourTree.GetInvocationList())
+            {
+                if (d.Method.Name == "GoToIdle")
+                {
+                    OnEndBehaviourTree -= (Action)d;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// From  a list of moves, execute them.
+    /// </summary>
+    /// <param name="moves"></param>
+    /// <returns></returns>
     public IEnumerator ExecuteMoves(List<Direction> moves)
     {
         //starts as own position
@@ -125,12 +152,20 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         //TODO Here it would launch and wait for the behaviour tree execution
         //probably use co routines here
         OnEndMove?.Invoke();
-
-        yield return StartCoroutine( CallBehaviourTree());
-        //TODO fazer voltar a poder ter interações so depois daqui depois
-        //TODO MAKE RESET BEHAVIOUR TREE AFTER ENDING EXECUTING IT
-        OnEndBehaviourTree?.Invoke();
+        //If go to idle was subscribed to this piece through OneEndBehaviour
+        //Make it unsubscribe from it
+        if (OnEndMove != null) //Code Made with AI
+        {
+            foreach (Delegate d in OnEndMove.GetInvocationList())
+            {
+                if (d.Method.Name == "GoToIdle")
+                {
+                    OnEndMove -= (Action)d;
+                }
+            }
+        }
     }
+
 
     public IEnumerator CallBehaviourTree()
     {

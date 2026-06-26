@@ -8,6 +8,7 @@ using static PlayerPieceSettings;
 using static Helper;
 using NUnit.Framework.Constraints;
 using System.Linq.Expressions;
+using System.Collections;
 
 public class BoardController : MonoBehaviour
 {
@@ -316,9 +317,9 @@ public class BoardController : MonoBehaviour
 
                     }
 
-                    //Make Series of Moves
+                    //Make Series of Moves and activate Behaviour Tree
                     validMoves.TryGetValue(targetTilePos, out MovePattern targetPattern);
-                    MakeMoves(targetCellScript, targetPattern);
+                    StartCoroutine(MakeMoves(targetCellScript, targetPattern,true));
                     //Trafers the entity from the previews location to the new one
                     UpdateBoardState(lastCell, nextCell);
 
@@ -346,10 +347,12 @@ public class BoardController : MonoBehaviour
 
     /// <summary>
     /// given a boardCell and a series of moves, makes the piece in the boardCell make that series of moves
+    /// <br/>
+    /// <param name="targetPattern"></param> determs if you activate the behaviour tree after this move
     /// </summary>
     /// <param name="targetCellScript"></param>
-    /// <param name="targetPattern"></param>
-    private void MakeMoves(BoardCell targetCellScript, MovePattern targetPattern)
+    /// 
+    private IEnumerator MakeMoves(BoardCell targetCellScript, MovePattern targetPattern,bool activateBehaviourTree)
     {
         //cell cannot be empty
         if (!targetCellScript.IsEmpty())
@@ -364,11 +367,35 @@ public class BoardController : MonoBehaviour
                 movablePiece.OnEndMove += CapturePendingPiece;
             }
 
-            movablePiece.OnEndMove += GoToIdle;
+            
 
+            
 
+            //This allows enemy pieces to also have behavour trees to execute too
+            if (activateBehaviourTree)
+            {
+                IAdaptable adaptablePiece = movablePiece as IAdaptable;
+                //try casting it as IAdaptable to check if it has an behaviour tree
+                if (adaptablePiece != null)
+                {
+                    yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
 
-            StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
+                    adaptablePiece.OnEndBehaviourTree += GoToIdle;
+                    yield return StartCoroutine(adaptablePiece.ExecuteBehaviourTree());
+
+                }
+                else 
+                {
+                    movablePiece.OnEndMove += GoToIdle;
+                    yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
+                }
+            }
+            else 
+            {
+                movablePiece.OnEndMove += GoToIdle;
+                yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
+            }
+            
         }
         else 
         {
@@ -560,11 +587,10 @@ public class BoardController : MonoBehaviour
     public void GoToIdle()
     {
 
-        //reset last selected
-        lastSelectedPiece.OnEndMove -= GoToIdle;
         //lastSelected = -Vector2Int.one;
+       // lastSelectedPiece.OnEndMove -= GoToIdle;
         targetCellScript = null;
-        lastSelectedPiece = null;
+        //lastSelectedPiece = null;
 
         //Reset valid moves:
         validMoves.Clear();
@@ -769,7 +795,8 @@ public class BoardController : MonoBehaviour
         MovePattern targetPattern = new MovePattern();
         targetPattern.moves = new List<Direction>();
         targetPattern.moves.Add(targetDirection);
-        MakeMoves(lastCell, targetPattern);
+        //Since this is a behaviour move, dont activate this piece behaviour tree
+        StartCoroutine(MakeMoves(lastCell, targetPattern, false));
         //Trafers the entity from the previews location to the new one
         UpdateBoardState(lastCell, nextCell);
     }

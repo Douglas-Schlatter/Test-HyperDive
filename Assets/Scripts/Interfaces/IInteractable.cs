@@ -14,6 +14,7 @@ public interface IInteractable
 
     public List<MovePattern> GetMovePatterns();
 
+    //public IEnumerator ExecuteMovesAndBehaviourTree(List<Direction> moves);
     public IEnumerator ExecuteMoves(List<Direction> moves);
     public IEnumerator DirectionalMove(Direction targetDirection);
 

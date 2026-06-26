@@ -5,8 +5,8 @@
     </editor:Toolbar>
     <SplitView fixed-pane-initial-dimension="200">
         <engine:VisualElement name="LeftPanel" style="flex-grow: 1;">
-            <InspectorView style="background-color: rgba(20, 20, 20, 0);" />
             <engine:Label text="Inspector" style="background-image: none; background-color: rgb(37, 37, 37); display: flex; visibility: visible; overflow: visible; opacity: 1; flex-grow: 0; color: rgb(247, 247, 247);" />
+            <InspectorView style="background-color: rgba(20, 20, 20, 0);" />
         </engine:VisualElement>
         <engine:VisualElement name="RightPanel" style="flex-grow: 1;">
             <engine:Label text="Behaviour Tree View" style="background-color: rgb(37, 37, 37); color: rgb(244, 244, 244);" />
