@@ -47,6 +47,11 @@ public abstract class Node : ScriptableObject
 
     }
 
+    public virtual void ResetNode()
+    {
+        state = State.Running;
+        started = false;
+    }
 
     protected abstract void OnStart();
     protected abstract State OnUpdate();

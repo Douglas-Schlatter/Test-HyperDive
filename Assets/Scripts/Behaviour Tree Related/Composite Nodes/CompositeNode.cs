@@ -9,13 +9,7 @@ public abstract class CompositeNode : Node
     public override Node Clone()
     {
         CompositeNode nodeClone = Instantiate(this);
-        foreach (Node child in children)
-        {
-            if (child != null)
-            {
-                nodeClone.children.Add(child.Clone());
-            }
-        }
+        nodeClone.children = children.ConvertAll(c => c.Clone());
         return nodeClone;
     }
 }
