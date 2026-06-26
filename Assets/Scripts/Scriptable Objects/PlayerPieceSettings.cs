@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEditor;
 
 [CreateAssetMenu(fileName = "PlayerPieceSettings", menuName = "Scriptable Objects/PlayerPieceSettings")]
 public class PlayerPieceSettings : ScriptableObject
@@ -21,15 +22,19 @@ public class PlayerPieceSettings : ScriptableObject
     [SerializeField] public List<MovePattern> movePatterns;
 
     public BehaviourTree behaviourTree;
+    public BehaviourTree runtimeBehaviourTree;
 
     public void InitializeBehaviourTree(BehaviourListener targetBehaviourListener, IAdaptable targetAdaptable)
     {
-        behaviourTree = ScriptableObject.CreateInstance<BehaviourTree>();// TODO REMOVE LATER JUST FOR TESTING
+        //behaviourTree = ScriptableObject.CreateInstance<BehaviourTree>();// TODO REMOVE LATER JUST FOR TESTING
+        behaviourTree = behaviourTree.Clone();
+        runtimeBehaviourTree = behaviourTree.Clone();
 
-        behaviourTree.behaviourListener = targetBehaviourListener;
-        behaviourTree.currentAdaptable = targetAdaptable;
-
-
+        //AssetDatabase.SaveAssets();
+        runtimeBehaviourTree.behaviourListener = targetBehaviourListener;
+        runtimeBehaviourTree.currentAdaptable = targetAdaptable;
+        //Pass these variables to all the nodes
+        runtimeBehaviourTree.Bind();
     }
 
     // TODO REMOVE LATER JUST FOR TESTING
@@ -66,7 +71,7 @@ public class PlayerPieceSettings : ScriptableObject
     public IEnumerator RunBehaviourTree()
     {
         //while bht didn't end executing
-        while (behaviourTree.treeState == Node.State.Running)
+        while (runtimeBehaviourTree.treeState == Node.State.Running)
         {
             behaviourTree.Update();
             yield return null;

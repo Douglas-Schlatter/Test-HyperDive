@@ -39,7 +39,8 @@ public class BehaviourTreeEditor : EditorWindow
         //From the root searches for a bhTreeView
         bhTreeView = root.Q<BehaviourTreeView>();
         inspectorView = root.Q<InspectorView>();
-
+        //When you call on node selected also call OnNodeSelectionChanged
+        bhTreeView.OnNodeSelected = OnNodeSelectionChanged;
         OnSelectionChange();
     }
 
@@ -47,10 +48,16 @@ public class BehaviourTreeEditor : EditorWindow
     {
         //Try cas the selection thing as a behaviour tree
         BehaviourTree bhTree = Selection.activeObject as BehaviourTree;
-
-        if (bhTree)
+        //If there is a bhTree and it is ready to beedited
+        if (bhTree && AssetDatabase.CanOpenAssetInEditor(bhTree.GetInstanceID()))
         {
             bhTreeView.PopulateView(bhTree);
         }
     }
+
+    protected void OnNodeSelectionChanged(NodeView node)
+    {
+        inspectorView.UpdateSelection(node);
+    }
+    
 }

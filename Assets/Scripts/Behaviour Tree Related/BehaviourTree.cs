@@ -4,6 +4,7 @@ using static Node;
 using UnityEditor;
 using Unity.VisualScripting;
 using State = Node.State;
+using UnityEngine.InputSystem.HID;
 
 [CreateAssetMenu(fileName = "BehaviourTree", menuName = "Scriptable Objects/BehaviourTree")]
 public class BehaviourTree : ScriptableObject
@@ -75,6 +76,12 @@ public class BehaviourTree : ScriptableObject
         {
             compositeNode.children.Add(child);
         }
+
+        TriggerNode triggerNode = parent as TriggerNode;
+        if (triggerNode)
+        {
+            triggerNode.child = child;
+        }
     }
 
     public void RemoveChild(Node parent, Node child)
@@ -94,6 +101,12 @@ public class BehaviourTree : ScriptableObject
             compositeNode.children.Remove(child);
         }
 
+        TriggerNode triggerNode = parent as TriggerNode;
+        if (triggerNode)
+        {
+            triggerNode.child = null;
+        }
+
     }
 
     public List<Node> GetChildren(Node parent)
@@ -101,7 +114,7 @@ public class BehaviourTree : ScriptableObject
         List<Node> children = new List<Node>();
         // cast as decorator
         DecoratorNode decorator = parent as DecoratorNode;
-        if (decorator)
+        if (decorator && decorator.child != null)
         {
             children.Add(decorator.child);
         }
@@ -110,8 +123,23 @@ public class BehaviourTree : ScriptableObject
         {
             return composite.children;
         }
+
+        TriggerNode triggerNode = parent as TriggerNode;
+        if (triggerNode && triggerNode.child != null)
+        {
+            children.Add(triggerNode.child);   
+        }
+
         return children;
     }
+
+    public BehaviourTree Clone()
+    {
+        BehaviourTree treeClone = Instantiate(this);
+        treeClone.rootNode = treeClone.rootNode.Clone();
+        return treeClone;
+    }
+
 
     /// <summary>
     /// Travels in the tree returning its nodes

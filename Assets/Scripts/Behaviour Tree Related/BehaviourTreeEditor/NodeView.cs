@@ -14,6 +14,8 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
     //This is our architure Behaviour Tree node
     public Node treeNode;
 
+    public Action<NodeView> OnNodeSelected;
+
     public NodeView(Node targetTreeNode)
     {
         this.treeNode = targetTreeNode;
@@ -44,6 +46,10 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         {
             input = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(bool));
         }
+        else if (treeNode is TriggerNode)
+        {
+                
+        }
 
         //If the input exist
         if (input != null)
@@ -70,6 +76,10 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         {
             output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
         }
+        else if (treeNode is TriggerNode)
+        {
+            output = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(bool));
+        }
 
 
         //If the input exist
@@ -85,6 +95,16 @@ public class NodeView : UnityEditor.Experimental.GraphView.Node
         base.SetPosition(newPos);
         treeNode.positionInGuid.x = newPos.xMin;
         treeNode.positionInGuid.y = newPos.yMin;
+    }
+
+    public override void OnSelected()
+    {
+        base.OnSelected();
+
+        if (OnNodeSelected != null)
+        {
+            OnNodeSelected.Invoke(this);
+        }
     }
 
 

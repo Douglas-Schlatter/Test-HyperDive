@@ -1,5 +1,42 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1668763175214237168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: 553ca7c67f9c70342a39a56d166fd6c8
+  positionInGuid: {x: 0, y: 0}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
+  targetDirection: 0
+--- !u!114 &-16044317244364423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3196fb7cb44ab42ac75c453fa2906a, type: 3}
+  m_Name: TriggerNode
+  m_EditorClassIdentifier: 
+  guid: dbcb86380dd46844ab1e94c332431551
+  positionInGuid: {x: 0, y: 0}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12,7 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbd023a4fc5a4c44abc993deeca6b3b3, type: 3}
   m_Name: Base BehaviourTree 2
   m_EditorClassIdentifier: 
-  rootNode: {fileID: 0}
+  rootNode: {fileID: -16044317244364423}
   treeState: 0
-  nodes: []
+  nodes:
+  - {fileID: -16044317244364423}
+  - {fileID: -1668763175214237168}
   behaviourListener: {fileID: 0}

@@ -134,7 +134,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
 
     public IEnumerator CallBehaviourTree()
     {
-        this.pieceSettings.TestBHT();
+        //this.pieceSettings.TestBHT();
         yield return StartCoroutine(pieceSettings.RunBehaviourTree());
     }
 

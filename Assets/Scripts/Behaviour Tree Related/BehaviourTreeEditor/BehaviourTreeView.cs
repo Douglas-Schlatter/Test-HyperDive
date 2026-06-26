@@ -12,6 +12,8 @@ public class BehaviourTreeView: GraphView
     public new class UxmlFactory : UxmlFactory<BehaviourTreeView, GraphView.UxmlTraits> { }
 
     public BehaviourTree currentBhTree;
+
+    public Action<NodeView> OnNodeSelected;
     public BehaviourTreeView()
     {
         //Add grid
@@ -88,6 +90,13 @@ public class BehaviourTreeView: GraphView
         DeleteElements(graphElements);
 
         graphViewChanged += OnGraphViewChanged;
+        //IF we don't have an triggerNode or rootNode, create one!
+        if (currentBhTree.rootNode == null)
+        { 
+            currentBhTree.rootNode = currentBhTree.CreateNode(typeof(TriggerNode)) as TriggerNode;
+            EditorUtility.SetDirty(currentBhTree);
+            AssetDatabase.SaveAssets();
+        }
 
         //Creating nodeviews
         foreach (Node node in currentBhTree.nodes)
@@ -178,6 +187,8 @@ public class BehaviourTreeView: GraphView
     protected void CreateNodeView(Node node)
     {
         NodeView nodeView = new NodeView(node);
+        //bubble the event up in the structure
+        nodeView.OnNodeSelected = OnNodeSelected;
         AddElement(nodeView);
     }
 

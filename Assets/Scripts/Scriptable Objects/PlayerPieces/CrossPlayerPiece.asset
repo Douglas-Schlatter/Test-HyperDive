@@ -21,3 +21,4 @@ MonoBehaviour:
   - moves: 0400000004000000
   - moves: 07000000
   - moves: 0700000007000000
+  behaviourTree: {fileID: 11400000, guid: b86b970d38b2b6745aae1c66d158994f, type: 2}

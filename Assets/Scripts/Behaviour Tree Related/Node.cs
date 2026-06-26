@@ -5,12 +5,12 @@ using UnityEngine;
 public abstract class Node : ScriptableObject
 {
     //UI related
-    public string guid;
-    public Vector2 positionInGuid;
+    [HideInInspector] public string guid;
+    [HideInInspector] public Vector2 positionInGuid;
 
     //Game Context Related
-    public BehaviourListener behaviourListener;
-    public IAdaptable currentAdaptable;
+    [HideInInspector] public BehaviourListener behaviourListener;
+    [HideInInspector] public IAdaptable currentAdaptable;
 
     //State Related
     //Maybe add idle state later so it can start idle, insted of running
@@ -38,6 +38,12 @@ public abstract class Node : ScriptableObject
         }
 
         return state;
+
+    }
+
+    public virtual Node Clone()
+    {
+        return Instantiate(this);
 
     }
 
