@@ -22,7 +22,7 @@ public abstract class DecoratorNode: Node
         else
         {
             //if you dont have a child 
-            return State.Success;
+            return noChildReturn;
         }
     }
 

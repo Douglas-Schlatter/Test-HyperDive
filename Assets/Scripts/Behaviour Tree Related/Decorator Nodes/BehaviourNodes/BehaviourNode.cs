@@ -11,7 +11,7 @@ public abstract class BehaviourNode: DecoratorNode
     /// Most behaviours will need to executing or check something in the game, if so 
     /// mark this  as true when the execution ended
     /// </summary>
-    public BehaviourState currentBehaviourState = BehaviourState.NotStarted;
+    [HideInInspector] public BehaviourState currentBehaviourState = BehaviourState.NotStarted;
 
 
 

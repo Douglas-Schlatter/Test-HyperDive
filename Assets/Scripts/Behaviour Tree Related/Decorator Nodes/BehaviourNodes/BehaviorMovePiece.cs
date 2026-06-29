@@ -4,7 +4,7 @@ using UnityEngine;
 public class BehaviorMovePiece : BehaviourNode
 {
     public  PlayerPieceSettings.Direction targetDirection = PlayerPieceSettings.Direction.N;
-    public Vector2Int currentPos;
+    [HideInInspector] public Vector2Int currentPos;
     protected override void OnStart()
     {
         currentPos = currentAdaptable.GetBoardEntity().GetPosition();
@@ -41,8 +41,8 @@ public class BehaviorMovePiece : BehaviourNode
                 break;
             case BehaviourState.Success:
                 //When the behaviour is marked as success with the father Mark method  return success in the next update
-                return State.Success;
                 //TODO Make it execute child and return its state later!
+                return ContinueSequence(State.Success);
                 break;
             case BehaviourState.Failure:
                 //this should never reach here, but is good redundenci anyways

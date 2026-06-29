@@ -1,5 +1,26 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8140275832639031880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: ac46f4852dcb80d44b2b598d21ab8055
+  positionInGuid: {x: -79.27256, y: -0.0000104904175}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 6638817338185865902}
+  currentBehaviourState: 0
+  targetDirection: 7
+  currentPos: {x: 0, y: 0}
 --- !u!114 &-3537958847648787440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,11 +34,11 @@ MonoBehaviour:
   m_Name: BehaviorMovePiece
   m_EditorClassIdentifier: 
   guid: e171f4df753c94e42bbd9d354d11c953
-  positionInGuid: {x: -649.59015, y: -258.60007}
+  positionInGuid: {x: -303.03177, y: -0.27487183}
   behaviourListener: {fileID: 0}
   state: 0
   started: 0
-  child: {fileID: 0}
+  child: {fileID: -8140275832639031880}
   currentBehaviourState: 0
   targetDirection: 0
   currentPos: {x: 0, y: 0}
@@ -38,6 +59,9 @@ MonoBehaviour:
   nodes:
   - {fileID: 1641664538876861895}
   - {fileID: -3537958847648787440}
+  - {fileID: -8140275832639031880}
+  - {fileID: 6638817338185865902}
+  - {fileID: 8737433951468651821}
   behaviourListener: {fileID: 0}
 --- !u!114 &1641664538876861895
 MonoBehaviour:
@@ -52,8 +76,50 @@ MonoBehaviour:
   m_Name: TriggerNode
   m_EditorClassIdentifier: 
   guid: 289854cf7728da34ebf358df060f7bf3
-  positionInGuid: {x: -980.266, y: -297.50003}
+  positionInGuid: {x: -567.03174, y: -0.27487183}
   behaviourListener: {fileID: 0}
   state: 0
   started: 0
   child: {fileID: -3537958847648787440}
+--- !u!114 &6638817338185865902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: 3ced22be4f94c9d479f835d4bd171274
+  positionInGuid: {x: 162.46968, y: -0.000007867813}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 8737433951468651821}
+  currentBehaviourState: 0
+  targetDirection: 3
+  currentPos: {x: 0, y: 0}
+--- !u!114 &8737433951468651821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: 7aa61055c5ecfcc48884b81fafcb598b
+  positionInGuid: {x: 414.8567, y: -0.000007867813}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
+  currentBehaviourState: 0
+  targetDirection: 0
+  currentPos: {x: 0, y: 0}
