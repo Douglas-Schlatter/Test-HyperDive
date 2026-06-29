@@ -6,9 +6,23 @@ using UnityEngine;
 /// </summary>
 public abstract class BehaviourNode: DecoratorNode
 {
+    
+    /// <summary>
+    /// Most behaviours will need to executing or check something in the game, if so 
+    /// mark this  as true when the execution ended
+    /// </summary>
+    public BehaviourState currentBehaviourState = BehaviourState.NotStarted;
 
 
 
+    public virtual void MarkAsFinishedAndUnsubscribe()
+    {
+        currentBehaviourState = BehaviourState.Success;
+        behaviourListener.OnBehaviourExecutionEnd -= MarkAsFinishedAndUnsubscribe;
+    }
 
-
+    public enum BehaviourState
+    {
+        NotStarted, Running, Success, Failure
+    }
 }

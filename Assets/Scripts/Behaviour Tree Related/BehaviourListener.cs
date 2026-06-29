@@ -10,6 +10,8 @@ public class BehaviourListener : MonoBehaviour
 {
     protected BoardController boardController;
 
+    public event Action OnBehaviourExecutionEnd;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -33,6 +35,13 @@ public class BehaviourListener : MonoBehaviour
 
     public void MoveToDirection(Vector2Int currentPos, PlayerPieceSettings.Direction targetDirection)
     {
+        boardController.OnBehaviourExecutionEnd += PassTheEventCall;
         boardController.MovedByBehaviour(currentPos, targetDirection);
+    }
+
+    public void PassTheEventCall()
+    {
+        OnBehaviourExecutionEnd?.Invoke();
+        boardController.OnBehaviourExecutionEnd -= PassTheEventCall;
     }
 }

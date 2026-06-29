@@ -45,7 +45,7 @@ public class BoardController : MonoBehaviour
     public const string CONST_END_PATH_LAYER = "EndPathHightLight";
 
     //Event Related
-    public event Action OnLockPlayerInteraction, OnLockChoosePiece;
+    public event Action OnLockPlayerInteraction, OnLockChoosePiece, OnBehaviourExecutionEnd;
     private void Awake()
     {
         GetStartVaraibles();
@@ -265,6 +265,12 @@ public class BoardController : MonoBehaviour
         tiles[targetTilePos.x, targetTilePos.y].layer = LayerMask.NameToLayer(targetLayer);
     }
 
+    /// <summary>
+    /// This method is responsible for doing the comunications between PlayerInputManager and BoardCommunication
+    /// <br/>
+    /// it acts accordenly to the current Board State.
+    /// </summary>
+    /// <param name="targetTilePos"></param>
     public void SelectTile(Vector2Int targetTilePos)
     {
         //verify is the tile is ocuppied, verifiy if it implements movable, verify state, if movable and interacable show moves 
@@ -319,12 +325,12 @@ public class BoardController : MonoBehaviour
 
                     //Make Series of Moves and activate Behaviour Tree
                     validMoves.TryGetValue(targetTilePos, out MovePattern targetPattern);
-                    StartCoroutine(MakeMoves(targetCellScript, targetPattern,true));
+                    StartCoroutine(MakeMoves(targetCellScript, targetPattern,true,GoToIdle));
                     //Trafers the entity from the previews location to the new one
                     UpdateBoardState(lastCell, nextCell);
 
 
-                    //Change to WaitingEndMove // TODO TEST THIS, I THINK THAT WHEN IT ENDS MOVING IT WOULD IMIDIATLY GO TO DILE
+                    //Change to WaitingEndMove 
                     currentBoardState = BoardState.WaitingEndMove;
                 }
                 else
@@ -348,11 +354,11 @@ public class BoardController : MonoBehaviour
     /// <summary>
     /// given a boardCell and a series of moves, makes the piece in the boardCell make that series of moves
     /// <br/>
-    /// <param name="targetPattern"></param> determs if you activate the behaviour tree after this move
     /// </summary>
-    /// <param name="targetCellScript"></param>
+    ///<param name="activateBehaviourTree">determs if you activate the behaviour tree after this move </param> 
+    /// <param name="OnCompleteCallThisMethod"> On end execution, call this function</param>
     /// 
-    private IEnumerator MakeMoves(BoardCell targetCellScript, MovePattern targetPattern,bool activateBehaviourTree)
+    private IEnumerator MakeMoves(BoardCell targetCellScript, MovePattern targetPattern,bool activateBehaviourTree, Action OnCompleteCallThisMethod)
     {
         //cell cannot be empty
         if (!targetCellScript.IsEmpty())
@@ -380,19 +386,19 @@ public class BoardController : MonoBehaviour
                 {
                     yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
 
-                    adaptablePiece.OnEndBehaviourTree += GoToIdle;
+                    adaptablePiece.OnEndBehaviourTree += OnCompleteCallThisMethod;
                     yield return StartCoroutine(adaptablePiece.ExecuteBehaviourTree());
 
                 }
                 else 
                 {
-                    movablePiece.OnEndMove += GoToIdle;
+                    movablePiece.OnEndMove += OnCompleteCallThisMethod;
                     yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
                 }
             }
             else 
             {
-                movablePiece.OnEndMove += GoToIdle;
+                movablePiece.OnEndMove += OnCompleteCallThisMethod;
                 yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
             }
             
@@ -587,10 +593,8 @@ public class BoardController : MonoBehaviour
     public void GoToIdle()
     {
 
-        //lastSelected = -Vector2Int.one;
-       // lastSelectedPiece.OnEndMove -= GoToIdle;
+
         targetCellScript = null;
-        //lastSelectedPiece = null;
 
         //Reset valid moves:
         validMoves.Clear();
@@ -612,23 +616,61 @@ public class BoardController : MonoBehaviour
     /// </summary>
     public bool NextMoveIsValid(Vector2Int startingPosition, Direction direction)
     {
-        //TODO LATER CHECK FOR OCUPING THE SAME SPACE RULES AND BEING CAPTURED RULES
+        
+        //This move is inside the board?
+        if (NextMoveIsInBounds(startingPosition, direction))
+        {
+            Vector2Int nextPos = GetNextPosition(startingPosition, direction);
+            BoardCell nextCell = tiles[nextPos.x, nextPos.y].GetComponent<BoardCell>();
+
+            //Is the cell occupied?
+            if (!nextCell.IsEmpty())
+            {
+                //Is this cell capturable?
+                if (nextCell.GetBoardEntity().CanBeCaptured())
+                {
+                    //capturable! valid
+                    return true;
+                }   
+                else 
+                {
+                    //Uncapturable invalid
+                    return false;
+                }
+            }
+            else 
+            {
+                //Nothing here it is valid
+                return true;
+            }
+        }
+        else 
+        {
+            //Out of bounds invalid
+            return false;
+        }
+
+    }
+
+    public bool NextMoveIsInBounds(Vector2Int startingPosition, Direction direction)
+    {
         switch (direction)
         {
             case Direction.N:
                 //Invalid position out of the board
                 if (startingPosition.y + 1 >= boardSizeY)
                 {
+
                     return false;
                 }
-                else 
+                else
                 {
                     return true;
                 }
                 break;
             case Direction.NW:
                 //Invalid position out of the board
-                if ((startingPosition.y + 1 >= boardSizeY) ||( startingPosition.x -1 < 0))
+                if ((startingPosition.y + 1 >= boardSizeY) || (startingPosition.x - 1 < 0))
                 {
                     return false;
                 }
@@ -672,7 +714,7 @@ public class BoardController : MonoBehaviour
                 break;
             case Direction.WS:
                 //Invalid position out of the board
-                if ((startingPosition.x - 1 < 0)|| (startingPosition.y -1 < 0))
+                if ((startingPosition.x - 1 < 0) || (startingPosition.y - 1 < 0))
                 {
                     return false;
                 }
@@ -708,7 +750,6 @@ public class BoardController : MonoBehaviour
                 break;
 
         }
-
     }
     #endregion
     #endregion
@@ -762,7 +803,7 @@ public class BoardController : MonoBehaviour
             Vector2Int nextPos = GetNextPosition(currentPos, targetDirection);
             BoardCell nextCell = tiles[nextPos.x, nextPos.y].GetComponent<BoardCell>();
 
-            
+
 
             //Check for colisions
 
@@ -781,12 +822,26 @@ public class BoardController : MonoBehaviour
                     pendingPieceToBeCaptured = true;
                     MakeBehaviourMove(targetDirection, lastCell, nextCell);
                 }
+                else
+                {
+                    //Failsafe
+                    Debug.LogWarning("This piece tried to make an invalid move, invoking OnBehaviourExecutionEnd to prevent softlock" +
+                        "the game");
+                    OnBehaviourExecutionEnd?.Invoke();
+                }
 
             }
             else
             {
                 MakeBehaviourMove(targetDirection, lastCell, nextCell);
             }
+        }
+        else 
+        {
+            //Failsafe
+            Debug.LogWarning("This piece tried to make an invalid move, invoking OnBehaviourExecutionEnd to prevent softlock" +
+                "the game");
+            OnBehaviourExecutionEnd?.Invoke();
         }
     }
 
@@ -796,7 +851,7 @@ public class BoardController : MonoBehaviour
         targetPattern.moves = new List<Direction>();
         targetPattern.moves.Add(targetDirection);
         //Since this is a behaviour move, dont activate this piece behaviour tree
-        StartCoroutine(MakeMoves(lastCell, targetPattern, false));
+        StartCoroutine(MakeMoves(lastCell, targetPattern, false, () => { OnBehaviourExecutionEnd?.Invoke(); }));
         //Trafers the entity from the previews location to the new one
         UpdateBoardState(lastCell, nextCell);
     }

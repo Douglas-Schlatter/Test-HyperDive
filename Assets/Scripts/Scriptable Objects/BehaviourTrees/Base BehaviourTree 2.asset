@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1668763175214237168
+--- !u!114 &-3238623839102823165
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,16 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
-  m_Name: BehaviorMovePiece
+  m_Script: {fileID: 11500000, guid: 7c5c02fb2388be945bccbba0c303e5ab, type: 3}
+  m_Name: DebugLogNode
   m_EditorClassIdentifier: 
-  guid: 553ca7c67f9c70342a39a56d166fd6c8
+  guid: ca3159d473794a2459fe5c577ed35b41
   positionInGuid: {x: 0, y: 0}
   behaviourListener: {fileID: 0}
   state: 0
   started: 0
   child: {fileID: 0}
-  targetDirection: 0
+  message: 
 --- !u!114 &-16044317244364423
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53,5 +53,5 @@ MonoBehaviour:
   treeState: 0
   nodes:
   - {fileID: -16044317244364423}
-  - {fileID: -1668763175214237168}
+  - {fileID: -3238623839102823165}
   behaviourListener: {fileID: 0}
