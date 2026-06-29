@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DebugLogNode
   m_EditorClassIdentifier: 
   guid: ca3159d473794a2459fe5c577ed35b41
-  positionInGuid: {x: 0, y: 0}
+  positionInGuid: {x: -136, y: 24}
   behaviourListener: {fileID: 0}
   state: 0
   started: 0
@@ -32,11 +32,11 @@ MonoBehaviour:
   m_Name: TriggerNode
   m_EditorClassIdentifier: 
   guid: dbcb86380dd46844ab1e94c332431551
-  positionInGuid: {x: 0, y: 0}
+  positionInGuid: {x: -387.8087, y: 23.999979}
   behaviourListener: {fileID: 0}
   state: 0
   started: 0
-  child: {fileID: 0}
+  child: {fileID: -3238623839102823165}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0

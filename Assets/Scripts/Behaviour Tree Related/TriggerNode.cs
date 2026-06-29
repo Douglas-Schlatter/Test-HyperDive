@@ -8,7 +8,7 @@ using UnityEngine;
 public class TriggerNode : Node
 {
 
-    [HideInInspector] public Node child;
+     public Node child;
     protected override void OnStart()
     {
         

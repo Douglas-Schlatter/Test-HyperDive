@@ -146,6 +146,10 @@ public class BehaviourTreeView: GraphView
                 if (nodeView != null)
                 {
                     currentBhTree.DeleteNode(nodeView.treeNode);
+
+                    //Save this tree since there was a change
+                    EditorUtility.SetDirty(currentBhTree);
+                    AssetDatabase.SaveAssets();
                 }
                 //If it is an edge that we are deleting
                 Edge edge = elem as Edge;
@@ -154,6 +158,10 @@ public class BehaviourTreeView: GraphView
                     NodeView parentView = edge.output.node as NodeView;
                     NodeView childView = edge.input.node as NodeView;
                     currentBhTree.RemoveChild(parentView.treeNode, childView.treeNode);
+
+                    //Save this tree since there was a change
+                    EditorUtility.SetDirty(currentBhTree);
+                    AssetDatabase.SaveAssets();
                 }
 
             });
@@ -167,6 +175,10 @@ public class BehaviourTreeView: GraphView
                 NodeView parentView = edge.output.node as NodeView;
                 NodeView childView = edge.input.node as NodeView;
                 currentBhTree.AddChild(parentView.treeNode, childView.treeNode);
+
+                //Save this tree since there was a change
+                EditorUtility.SetDirty(currentBhTree);
+                AssetDatabase.SaveAssets();
             }
         }
 
