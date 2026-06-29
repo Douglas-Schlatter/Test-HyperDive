@@ -1,0 +1,221 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4689451415242528784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: f3058f4f33c058245852a16ce712c6bb
+  positionInGuid: {x: 670.5104, y: 7.000061}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: -73423516565647166}
+  currentBehaviourState: 0
+  targetDirection: 3
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &-3105750712621325052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: e12c7f62a9ff509408aa8e77ff5ba731
+  positionInGuid: {x: 429, y: 204}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 7639877144382611819}
+  currentBehaviourState: 0
+  targetDirection: 5
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &-2277551545759587269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: dcf98a01beecb7041be1cc33d33225d6
+  positionInGuid: {x: -89.83301, y: 6.999965}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 6559618477847835692}
+  currentBehaviourState: 0
+  targetDirection: 0
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &-73423516565647166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: c5437871670a60a41a1d18f7fe58eb9f
+  positionInGuid: {x: -67.32404, y: 203.99992}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 7451991928623402856}
+  currentBehaviourState: 0
+  targetDirection: 1
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd023a4fc5a4c44abc993deeca6b3b3, type: 3}
+  m_Name: Attack Behaviour Tree
+  m_EditorClassIdentifier: 
+  rootNode: {fileID: 2353560373427661813}
+  treeState: 0
+  nodes:
+  - {fileID: 2353560373427661813}
+  - {fileID: -2277551545759587269}
+  - {fileID: 6559618477847835692}
+  - {fileID: 2394204982374867570}
+  - {fileID: -4689451415242528784}
+  - {fileID: -73423516565647166}
+  - {fileID: 7451991928623402856}
+  - {fileID: -3105750712621325052}
+  - {fileID: 7639877144382611819}
+  behaviourListener: {fileID: 0}
+--- !u!114 &2353560373427661813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3196fb7cb44ab42ac75c453fa2906a, type: 3}
+  m_Name: TriggerNode
+  m_EditorClassIdentifier: 
+  guid: 8d9c45f641755e840a3534931719ef83
+  positionInGuid: {x: -287.16696, y: 7.0001006}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: -2277551545759587269}
+--- !u!114 &2394204982374867570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: 1c7a37219ba66024e9a6f6dceb108955
+  positionInGuid: {x: 428.93405, y: -5.9999695}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: -4689451415242528784}
+  currentBehaviourState: 0
+  targetDirection: 4
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &6559618477847835692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: 076e8e5692af7514abf5b994e97aab4f
+  positionInGuid: {x: 167.09003, y: -6.044998}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 2394204982374867570}
+  currentBehaviourState: 0
+  targetDirection: 7
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &7451991928623402856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: 34df5096d4890f3488883ef00e64589d
+  positionInGuid: {x: 167, y: 204}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: -3105750712621325052}
+  currentBehaviourState: 0
+  targetDirection: 2
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}
+--- !u!114 &7639877144382611819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4d6948e6a033e64eaf5e1784bc05b26, type: 3}
+  m_Name: BehaviorAttackAdjacentTile
+  m_EditorClassIdentifier: 
+  guid: 1c20cd1d8e878244fa932fbcc0efda0c
+  positionInGuid: {x: 693.4557, y: 204.00002}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
+  currentBehaviourState: 0
+  targetDirection: 6
+  damageOfTheAttack: 1
+  currentPos: {x: 0, y: 0}

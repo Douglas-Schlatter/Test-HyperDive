@@ -37,7 +37,7 @@ public class BoardCell : MonoBehaviour
         }
     }
 
-    protected void EntityRemoved()
+    public void EntityRemoved()
     {
         //my entity got removed
         currentEntity = null;

@@ -21,5 +21,5 @@ MonoBehaviour:
   - moves: 03000000
   - moves: 04000000
   - moves: 07000000
-  behaviourTree: {fileID: 11400000, guid: bc0f3337a8fd50643b724e20ff654f12, type: 2}
+  behaviourTree: {fileID: 11400000, guid: 2d1b424e271219f46bf2b80584b6f490, type: 2}
   runtimeBehaviourTree: {fileID: 0}

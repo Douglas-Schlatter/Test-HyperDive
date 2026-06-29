@@ -40,8 +40,7 @@ public class BehaviorMovePiece : BehaviourNode
                 return State.Running;
                 break;
             case BehaviourState.Success:
-                //When the behaviour is marked as success with the father Mark method  return success in the next update
-                //TODO Make it execute child and return its state later!
+                //When the behaviour is marked as success with the father Class "MarkAsFinishedAndUnsubscribe", continue the behaviour sequence
                 return ContinueSequence(State.Success);
                 break;
             case BehaviourState.Failure:

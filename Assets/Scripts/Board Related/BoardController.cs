@@ -88,7 +88,7 @@ public class BoardController : MonoBehaviour
         this.cellPrefab = boardSettings.cellPrefab;
     }
 
-    protected void GenerateTiles() /// todo make a generate board state
+    protected void GenerateTiles()
     {
         
         List<GameObject> possiblePieces = PopulatePossiblePieces();
@@ -142,13 +142,34 @@ public class BoardController : MonoBehaviour
             //Set boardEntity cell as this one as well
             targetCellScript.GetBoardEntity().SetBoardCell(targetCellScript);
             //Update boardState to notify it has an object there
-            boardState[targetCellScript.GetPosition().x, targetCellScript.GetPosition().y] = 1; 
+            boardState[targetCellScript.GetPosition().x, targetCellScript.GetPosition().y] = 1;
+
+            //If it is a piece
+            Piece targetPiece = targetCellScript.GetBoardEntity() as Piece;
+            if (targetPiece != null)
+            {
+                //Once a piece is removed, call UpdatePieceRemoval on its initial position
+                targetPiece.OnRemove += () => {UpdatePieceRemoval(new Vector2Int(targetPiece.GetPosition().x, targetPiece.GetPosition().y));};
+            }
         }
         else
         {
             Debug.LogError("The prefab " + targetSpawnPrefab.name + " tring to be spawned does not have a BoardEntity component!");
 
         }
+    }
+
+    protected void UpdatePieceRemoval(Vector2Int pos)
+    {
+        //change parent
+        BoardCell targetBoardCell = tiles[pos.x, pos.y].GetComponent<BoardCell>();
+
+
+        //removes last selected form its previous owner
+        targetBoardCell.EntityRemoved();
+        //Update boardState to notify it has an object there
+        boardState[pos.x, pos.y] = 0;
+
     }
 
     /// <summary>
@@ -855,6 +876,48 @@ public class BoardController : MonoBehaviour
         //Trafers the entity from the previews location to the new one
         UpdateBoardState(lastCell, nextCell);
     }
+
+    /// <summary>
+    /// Given a starting position, direction and damage
+    /// <br/>
+    /// attack the position in the direction passed
+    /// </summary>
+    /// <param name="targetDirection"></param>
+    /// <param name="lastCell"></param>
+    /// <param name="damage"></param>
+    public void BehaviourAttackAdjacentTile(Vector2Int currentPos, Direction targetDirection, int damage)
+    {
+        if (NextMoveIsInBounds(currentPos, targetDirection))
+        {
+            //TODO CHECK IF CAN BE CAPTURED BEFORE MOVING
+
+            //Last Selected BoardCell
+            BoardCell lastCell = tiles[currentPos.x, currentPos.y].GetComponent<BoardCell>();
+            //Next Selected BoardCell
+            Vector2Int nextPos = GetNextPosition(currentPos, targetDirection);
+            BoardCell nextCell = tiles[nextPos.x, nextPos.y].GetComponent<BoardCell>();
+
+            //If next cell has something,attack it
+            if (!nextCell.IsEmpty())
+            {
+                nextCell.GetBoardEntity().GetHit(damage);
+                //Attack always returns success, don't matter what happends
+                OnBehaviourExecutionEnd?.Invoke();
+            }
+            else
+            {
+                //Attack always returns success, don't matter what happends
+                OnBehaviourExecutionEnd?.Invoke();
+            }
+        }
+        else
+        {
+            //Attack always returns success, don't matter what happends
+            OnBehaviourExecutionEnd?.Invoke();
+        }
+    }
+
+
     #endregion
 
 

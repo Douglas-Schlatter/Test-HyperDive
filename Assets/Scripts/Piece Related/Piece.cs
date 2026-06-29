@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Piece : BoardEntity
 {
-    protected int life;
+    [SerializeField] protected int life;
 
     public override event Action OnRemove;
 

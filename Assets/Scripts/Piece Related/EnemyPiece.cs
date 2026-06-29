@@ -6,5 +6,9 @@ using UnityEngine;
 /// </summary>
 public class EnemyPiece : Piece
 {
-
+    protected void Awake()
+    {
+        //here i would put an BaseEnemySettings so that the enemy stats could be configurable
+        life = 1;
+    }
 }

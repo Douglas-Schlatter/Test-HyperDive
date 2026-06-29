@@ -17,6 +17,7 @@ public abstract class BehaviourNode: DecoratorNode
 
     public virtual void MarkAsFinishedAndUnsubscribe()
     {
+        //Debug.LogWarning("Marking as success");
         currentBehaviourState = BehaviourState.Success;
         behaviourListener.OnBehaviourExecutionEnd -= MarkAsFinishedAndUnsubscribe;
     }

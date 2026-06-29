@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public abstract class DecoratorNode: Node
 {
-    [HideInInspector] public Node child;
+    public Node child;
     /// <summary>
     /// if you have a child, execute him and propagate its result,
     /// <br/> otherwise, return parameter state (this is a leaf node)
