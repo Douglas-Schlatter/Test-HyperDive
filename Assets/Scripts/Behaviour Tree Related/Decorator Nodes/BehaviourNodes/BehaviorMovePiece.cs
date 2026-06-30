@@ -43,6 +43,7 @@ public class BehaviorMovePiece : BehaviourNode
                     currentBehaviourState = BehaviourState.Failure;
                     return State.Failure;
                 }
+                break;
             case BehaviourState.Running:
                 return State.Running;
                 break;

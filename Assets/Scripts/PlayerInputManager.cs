@@ -50,7 +50,7 @@ public class PlayerInputManager : MonoBehaviour
                     {
                         ClickedOnBoardTile(info);
                     }
-                    else //Todo needs to make the other highlight cases
+                    else 
                     {
                         //it could be usefull to add something for when the raycast doesn't
                         //hit any useful layer, like unhighlight everything and canceling a move

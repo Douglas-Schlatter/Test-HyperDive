@@ -42,7 +42,6 @@ public class BehaviourTree : ScriptableObject
         targetNode.guid = GUID.Generate().ToString();
         nodes.Add(targetNode);
 
-        //TODO Check if this maintains after build / aka nmot in the editor 
         //Recs this Node SO to this Tree SO  
         AssetDatabase.AddObjectToAsset(targetNode, this);
         AssetDatabase.SaveAssets();
@@ -63,7 +62,7 @@ public class BehaviourTree : ScriptableObject
 
     public void AddChild(Node parent, Node child)
     {
-        //TODO if have time do it with reflection
+        //If have time do it with reflection
         //Try cast it as Decorator
         DecoratorNode decoratorNode = parent as DecoratorNode;
         if (decoratorNode)
@@ -87,7 +86,7 @@ public class BehaviourTree : ScriptableObject
     public void RemoveChild(Node parent, Node child)
     {
 
-        //TODO if have time do it with reflection
+        //If have time do it with reflection
         //Try cast it as Decorator
         DecoratorNode decoratorNode = parent as DecoratorNode;
         if (decoratorNode)

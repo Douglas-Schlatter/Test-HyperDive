@@ -75,8 +75,6 @@ public class PlayerPieceSettings : ScriptableObject
         runtimeBehaviourTree.currentAdaptable = currentAdaptable;
         //Pass these variables to all the nodes
         runtimeBehaviourTree.Bind();
-        //if the tree was already executed before reset it
-        //ResetBehaviourTree();
     }
 
 

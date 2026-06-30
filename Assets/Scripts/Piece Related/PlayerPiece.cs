@@ -36,7 +36,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
         //starts as own position
         deltaPos = currentBoardCell.GetPosition();
-        //OnEndMove += ExecuteBehaviourTree;
+        
 
         UpdateLayer();
 
@@ -47,7 +47,6 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         }
 
         pieceSettings.InitializeBehaviourTree(behaviourListener, this);
-        //pieceSettings
     }
 
 
@@ -116,8 +115,9 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
 
         yield return StartCoroutine( CallBehaviourTree());
-        //TODO fazer voltar a poder ter interações so depois daqui depois
+        
         OnEndBehaviourTree?.Invoke();
+
         //If go to idle was subscribed to this piece through OneEndBehaviour
         //Make it unsubscribe from it
         if (OnEndBehaviourTree != null) //Code Made with AI
@@ -148,11 +148,11 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         }
 
 
-        //Notify everyone that is waiting that the movement + BT is done! 
-        //TODO Here it would launch and wait for the behaviour tree execution
+        //Notify everyone that is waiting that the movement is done!   
         //probably use co routines here
         OnEndMove?.Invoke();
-        //If go to idle was subscribed to this piece through OneEndBehaviour
+
+        //If "go to idle" was subscribed to this piece through OneEndBehaviour
         //Make it unsubscribe from it
         if (OnEndMove != null) //Code Made with AI
         {
@@ -169,7 +169,6 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
 
     public IEnumerator CallBehaviourTree()
     {
-        //this.pieceSettings.TestBHT();
         yield return StartCoroutine(pieceSettings.RunBehaviourTree());
     }
 
@@ -180,8 +179,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
         //Debug.Log("was in"+ deltaPos + "tried to make a move to " + nextPosition);
         //Vector3 nextPosVec3 = new Vector3(nextPosition.x, this.gameObject.transform.position.y, nextPosition.y);
 
-        //this.gameObject.transform.position = nextPosVec3; //just to test
-        //Wait until Object Move to that new position //TODO LATER BE THE FUNCITION  MoveAndExecuteBT
+        //Wait until Object Move to that new position 
         yield return StartCoroutine(MoveTo(deltaPos, nextPosition, animationTime));
         deltaPos = nextPosition;
     }
@@ -214,8 +212,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
 
     public BehaviourListener GetBehaviourTreeListener()
     {
-        //Todo 
-        throw new System.NotImplementedException();
+        return behaviourListener;
     }
 
     public List<MovePattern> GetMovePatterns()

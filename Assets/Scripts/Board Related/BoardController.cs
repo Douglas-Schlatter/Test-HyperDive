@@ -69,7 +69,7 @@ public class BoardController : MonoBehaviour
 
 
     #region BoardGeneration
-    protected void GetStartVaraibles() // TODO maybe change this to initialize variables?
+    protected void GetStartVaraibles() 
     {
         if (boardSettings.Equals(null))
         {
@@ -257,8 +257,6 @@ public class BoardController : MonoBehaviour
     }
 
 
-    //probably will need a spawn piece void later
-
     #endregion
 
     #region BoardComunication
@@ -293,9 +291,6 @@ public class BoardController : MonoBehaviour
     /// <param name="targetTilePos"></param>
     public void SelectTile(Vector2Int targetTilePos)
     {
-        //verify is the tile is ocuppied, verifiy if it implements movable, verify state, if movable and interacable show moves 
-
-        
 
         switch (currentBoardState)
         {
@@ -693,6 +688,7 @@ public class BoardController : MonoBehaviour
 
     public bool NextMoveIsInBounds(Vector2Int startingPosition, Direction direction)
     {
+        
         switch (direction)
         {
             case Direction.N:

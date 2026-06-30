@@ -11,8 +11,8 @@ public abstract class BoardEntity : MonoBehaviour
 
     // needed to notify boardcell that is now empty,
     // in the future pieces can be removed for many reason
-    // (Piece death,Piece movement, leaves options for destructuble objects to be implemented if wanted)
-    public abstract event Action OnRemoveByAttack;  //todo maybe rename to on death, because movable situations passes through the boardController anyways
+    // (Piece death, leaves options for destructuble objects to be implemented if wanted)
+    public abstract event Action OnRemoveByAttack;
 
     public BoardCell GetBoardCell() 
     {
@@ -25,7 +25,6 @@ public abstract class BoardEntity : MonoBehaviour
 
     public void SetBoardCell(BoardCell targetCell)
     {
-        //this.gameObject.transform.parent = targetCell.gameObject.transform;
         currentBoardCell = targetCell;
     }
 
