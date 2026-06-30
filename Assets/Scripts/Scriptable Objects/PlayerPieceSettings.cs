@@ -6,6 +6,7 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEditor;
 
+
 [CreateAssetMenu(fileName = "PlayerPieceSettings", menuName = "Scriptable Objects/PlayerPieceSettings")]
 public class PlayerPieceSettings : ScriptableObject
 {
@@ -77,5 +78,7 @@ public class PlayerPieceSettings : ScriptableObject
         //if the tree was already executed before reset it
         //ResetBehaviourTree();
     }
+
+
 
 }

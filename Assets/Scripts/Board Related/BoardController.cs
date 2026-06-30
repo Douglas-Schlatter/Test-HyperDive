@@ -57,7 +57,7 @@ public class BoardController : MonoBehaviour
     void Start()
     {
         GenerateTiles();
-        PrintBoardState();
+        //PrintBoardState();
     }
 
 

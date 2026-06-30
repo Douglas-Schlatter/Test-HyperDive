@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Name: TriggerNode
   m_EditorClassIdentifier: 
   guid: 289854cf7728da34ebf358df060f7bf3
-  positionInGuid: {x: -567.03174, y: -0.27487183}
+  positionInGuid: {x: -803.76855, y: -0.000011444092}
   behaviourListener: {fileID: 0}
   state: 0
   started: 0
