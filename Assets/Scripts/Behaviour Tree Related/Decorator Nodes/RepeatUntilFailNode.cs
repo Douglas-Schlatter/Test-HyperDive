@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// This class would keep updating its child unitl fail, this is a bonus class from the implementation
+/// currently doesn't do anything
+/// </summary>
 public class RepeatUntilFailNode : DecoratorNode
 {
 
@@ -16,9 +20,11 @@ public class RepeatUntilFailNode : DecoratorNode
 
     protected override State OnUpdate()
     {
-        state = child.Update();
 
-        switch (state)
+        /*
+         * 
+         state = child.Update();
+                 switch (state)
         {
             case State.Running:
                 return State.Running;
@@ -34,5 +40,7 @@ public class RepeatUntilFailNode : DecoratorNode
                 return State.Running;
                 break;
         }
+         */
+        return State.Success;
     }
 }
