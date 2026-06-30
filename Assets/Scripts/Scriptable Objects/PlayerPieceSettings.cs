@@ -24,7 +24,7 @@ public class PlayerPieceSettings : ScriptableObject
 
     //Behaviour Tree Related
     public BehaviourTree behaviourTree;
-    public BehaviourTree runtimeBehaviourTree;
+    [HideInInspector]public BehaviourTree runtimeBehaviourTree;
 
     //Runtime Variables
     //These are variables initialized at run time in "InitializeBehaviourTree"
@@ -36,7 +36,11 @@ public class PlayerPieceSettings : ScriptableObject
         //Save These references if we need to reset that tree later
         currentAdaptable = targetAdaptable;
         currentBehaviourListener = targetBehaviourListener;
-        ResetBehaviourTree();
+        if (behaviourTree != null)
+        {
+            ResetBehaviourTree();
+        }
+        
     }
 
 

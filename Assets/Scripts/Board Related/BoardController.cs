@@ -402,7 +402,7 @@ public class BoardController : MonoBehaviour
             {
                 IAdaptable adaptablePiece = movablePiece as IAdaptable;
                 //try casting it as IAdaptable to check if it has an behaviour tree
-                if (adaptablePiece != null)
+                if (adaptablePiece != null && adaptablePiece.HaveBehaviourTree())
                 {
                     yield return StartCoroutine(movablePiece.ExecuteMoves(targetPattern.moves));
 

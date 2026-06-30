@@ -232,4 +232,16 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
         return this;
     }
+
+    public bool HaveBehaviourTree()
+    {
+        if (pieceSettings.behaviourTree != null)
+        {
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
 }
