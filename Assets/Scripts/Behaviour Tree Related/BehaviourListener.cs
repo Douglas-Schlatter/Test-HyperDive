@@ -29,15 +29,15 @@ public class BehaviourListener : MonoBehaviour
         
     }
 
-    public bool CanMoveToDirection(Vector2Int currentPos, Direction targetDirection)
+    public bool CanMoveToDirection(Vector2Int currentPos, Direction targetDirection,bool allowFriendlyFire)
     {
-        return boardController.NextMoveIsValid(currentPos, targetDirection);
+        return boardController.NextMoveIsValid(currentPos, targetDirection, allowFriendlyFire);
     }
 
-    public void MoveToDirection(Vector2Int currentPos, Direction targetDirection)
+    public void MoveToDirection(Vector2Int currentPos, Direction targetDirection, bool allowFriendlyFire)
     {
         boardController.OnBehaviourExecutionEnd += PassTheEventCall;
-        boardController.MovedByBehaviour(currentPos, targetDirection);
+        boardController.MovedByBehaviour(currentPos, targetDirection, allowFriendlyFire);
     }
 
     public void AttackAdjacentTile(Vector2Int currentPos, Direction targetDirection, int damage)

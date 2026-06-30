@@ -21,6 +21,7 @@ MonoBehaviour:
   currentBehaviourState: 0
   targetDirection: 7
   currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0
 --- !u!114 &-3537958847648787440
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,6 +43,7 @@ MonoBehaviour:
   currentBehaviourState: 0
   targetDirection: 0
   currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,6 +104,7 @@ MonoBehaviour:
   currentBehaviourState: 0
   targetDirection: 3
   currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0
 --- !u!114 &8737433951468651821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,3 +126,4 @@ MonoBehaviour:
   currentBehaviourState: 0
   targetDirection: 4
   currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0

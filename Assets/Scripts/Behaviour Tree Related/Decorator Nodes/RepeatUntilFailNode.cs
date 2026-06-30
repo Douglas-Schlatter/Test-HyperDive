@@ -17,13 +17,22 @@ public class RepeatUntilFailNode : DecoratorNode
     protected override State OnUpdate()
     {
         state = child.Update();
-        if (state == State.Failure)
+
+        switch (state)
         {
-            return state;
-        }
-        else 
-        {
-            return State.Running;
+            case State.Running:
+                return State.Running;
+                break;
+            case State.Failure:
+                return state;
+                break;
+            case State.Success:
+                child.ResetNode();
+                return State.Running;
+                break;
+            default:
+                return State.Running;
+                break;
         }
     }
 }

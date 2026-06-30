@@ -15,4 +15,6 @@ public interface IAdaptable
     public IEnumerator ExecuteBehaviourTree();
     public BoardEntity GetBoardEntity();
     public BehaviourListener GetBehaviourTreeListener();
+
+    public bool HaveBehaviourTree();
 }

@@ -5,6 +5,13 @@ public class BehaviorMovePiece : BehaviourNode
 {
     public  PlayerPieceSettings.Direction targetDirection = PlayerPieceSettings.Direction.N;
     [HideInInspector] public Vector2Int currentPos;
+
+    /// <summary>
+    /// True = Player can capture player pieces
+    /// <br/>
+    /// False = player cannot caputre player pieces
+    /// </summary>
+    public bool allowFriendlyFire = false;
     protected override void OnStart()
     {
         currentPos = currentAdaptable.GetBoardEntity().GetPosition();
@@ -24,10 +31,10 @@ public class BehaviorMovePiece : BehaviourNode
                 //check if you can do your behaviour
                 //subcribre to check when its done
                 //and execute it
-                if (behaviourListener.CanMoveToDirection(currentPos, targetDirection))
+                if (behaviourListener.CanMoveToDirection(currentPos, targetDirection, allowFriendlyFire))
                 {
                     behaviourListener.OnBehaviourExecutionEnd += MarkAsFinishedAndUnsubscribe;
-                    behaviourListener.MoveToDirection(currentPos, targetDirection);
+                    behaviourListener.MoveToDirection(currentPos, targetDirection, allowFriendlyFire);
                     currentBehaviourState = BehaviourState.Running;
                     return State.Running;
                 }

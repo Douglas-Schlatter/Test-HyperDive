@@ -6,7 +6,7 @@ using System;
 /// </summary>
 public class Obstacle : BoardEntity
 {
-    public override event Action OnRemove;
+    public override event Action OnRemoveByAttack;
 
 
     /// <summary>

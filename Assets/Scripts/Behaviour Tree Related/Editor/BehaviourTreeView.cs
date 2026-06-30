@@ -27,14 +27,15 @@ public class BehaviourTreeView: GraphView
 
 
 
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Behaviour Tree Related/BehaviourTreeEditor/BehaviourTreeEditor.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Behaviour Tree Related/Editor/BehaviourTreeEditor.uss");
         styleSheets.Add(styleSheet);
     }
 
 
     public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
     {
-        //TODO here if i have spare time, have to implement with Reflection
+        //This could be made with reflection, but i thought my way of doing it
+        //did the same thing but more readable by other programmers that would be in the project
 
 
         //get all nodes that derive from actionNodes
@@ -79,7 +80,6 @@ public class BehaviourTreeView: GraphView
     /// Given a behaviour tree generates an equivalant in the Editor
     /// </summary>
     /// <param name="bhTree"></param>
-    /// <exception cref="NotImplementedException"></exception>
     public  void PopulateView(BehaviourTree bhTree)
     {
         this.currentBhTree = bhTree;

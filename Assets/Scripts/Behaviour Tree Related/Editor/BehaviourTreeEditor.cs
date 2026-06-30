@@ -7,7 +7,7 @@ public class BehaviourTreeEditor : EditorWindow
     [SerializeField]
     private VisualTreeAsset m_VisualTreeAsset = default;
 
-    //sub windows
+    //sub windows related
     BehaviourTreeView bhTreeView;
     InspectorView inspectorView;
 
@@ -24,16 +24,18 @@ public class BehaviourTreeEditor : EditorWindow
         VisualElement root = rootVisualElement;
 
 
-        // Instantiate UXML
+
         /*
            //OLD BASE CODE FROM UNITY
-                VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
-        root.Add(labelFromUXML);
+            VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
+            root.Add(labelFromUXML);
          */
-        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/Behaviour Tree Related/BehaviourTreeEditor/BehaviourTreeEditor.uxml");
+
+        // Instantiate UXML
+        var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Scripts/Behaviour Tree Related/Editor/BehaviourTreeEditor.uxml");
         visualTree.CloneTree(root);
         //Add StyleSheet
-        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Behaviour Tree Related/BehaviourTreeEditor/BehaviourTreeEditor.uss");
+        var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Behaviour Tree Related/Editor/BehaviourTreeEditor.uss");
         root.styleSheets.Add(styleSheet);
 
         //From the root searches for a bhTreeView

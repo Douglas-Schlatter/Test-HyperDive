@@ -6,7 +6,7 @@ public class Piece : BoardEntity
 {
     [SerializeField] protected int life;
 
-    public override event Action OnRemove;
+    public override event Action OnRemoveByAttack;
 
 
     /// <summary>
@@ -36,7 +36,7 @@ public class Piece : BoardEntity
     /// </summary>
     public override void GetCaptured()
     {
-        OnRemove?.Invoke();
+        //OnRemoveByAttack?.Invoke();
 
         //OPTIMIZATION here i would implement pool logic -> returnObjToPool
         Destroy(this.gameObject);
@@ -48,7 +48,7 @@ public class Piece : BoardEntity
         //I died :c
         if ((life - damage) <= 0)
         {
-            OnRemove?.Invoke();
+            OnRemoveByAttack?.Invoke();
 
             //OPTIMIZATION here i would implement pool logic -> returnObjToPool
             Destroy(this.gameObject);

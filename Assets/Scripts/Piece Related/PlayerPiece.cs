@@ -177,7 +177,7 @@ public class PlayerPiece : Piece, IAdaptable, IInteractable
     {
         Vector2Int nextPosition = GetNextPosition(deltaPos, targetDirection);
         
-        Debug.Log("was in"+ deltaPos + "tried to make a move to " + nextPosition);
+        //Debug.Log("was in"+ deltaPos + "tried to make a move to " + nextPosition);
         //Vector3 nextPosVec3 = new Vector3(nextPosition.x, this.gameObject.transform.position.y, nextPosition.y);
 
         //this.gameObject.transform.position = nextPosVec3; //just to test

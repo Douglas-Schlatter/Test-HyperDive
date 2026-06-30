@@ -14,10 +14,10 @@ public class BoardController : MonoBehaviour
 {
     //Settings and Board Generation related
     [SerializeField] protected BoardSettings boardSettings;
-    int boardSizeX, boardSizeY,cellSize; //TODO MAYBE REMOVE CELLSIZE LATTER
+    int boardSizeX, boardSizeY,cellSize;
     [SerializeField] protected GameObject cellPrefab; // ---> filled manually in the editor
     protected GameObject[,] tiles;
-    protected int[,] boardState; // ---> usefull for debuging  // TODO maybe will take it out later if only the cellScriptLogic is used
+    protected int[,] boardState; // ---> usefull for debuging  
     [SerializeField] protected int entityCount;
 
     //Move Related
@@ -149,7 +149,7 @@ public class BoardController : MonoBehaviour
             if (targetPiece != null)
             {
                 //Once a piece is removed, call UpdatePieceRemoval on its initial position
-                targetPiece.OnRemove += () => {UpdatePieceRemoval(new Vector2Int(targetPiece.GetPosition().x, targetPiece.GetPosition().y));};
+                targetPiece.OnRemoveByAttack += () => {UpdatePieceRemoval(new Vector2Int(targetPiece.GetPosition().x, targetPiece.GetPosition().y));};
             }
         }
         else
@@ -176,7 +176,6 @@ public class BoardController : MonoBehaviour
     /// Prepares a list simulating a bag of pieces, that can have all the objectes in BoardSettings PossibleSpawns + empty spaces
     /// </summary>
     /// <param name="possiblePieces"></param>
-    /// <exception cref="NotImplementedException"></exception>
     List<GameObject> PopulatePossiblePieces()
     {
         
@@ -500,7 +499,7 @@ public class BoardController : MonoBehaviour
         for (int i = 0; i < patternSize; i++)
         {
             //Check if the move is valid
-            if(!NextMoveIsValid(nextPosition, pattern.moves[i]))
+            if(!NextMoveIsValid(nextPosition, pattern.moves[i],false)) //false = don't allow friendly fire
             {
                 //if not a valid move because it goes out of the board just return and dont highlight anything
                 return;
@@ -635,7 +634,7 @@ public class BoardController : MonoBehaviour
     /// <summary>
     /// Given an original position and a direction to go to, return true if it is a valid position in the board
     /// </summary>
-    public bool NextMoveIsValid(Vector2Int startingPosition, Direction direction)
+    public bool NextMoveIsValid(Vector2Int startingPosition, Direction direction,bool allowFriendlyFire)
     {
         
         //This move is inside the board?
@@ -647,17 +646,36 @@ public class BoardController : MonoBehaviour
             //Is the cell occupied?
             if (!nextCell.IsEmpty())
             {
-                //Is this cell capturable?
-                if (nextCell.GetBoardEntity().CanBeCaptured())
+                //Friendly fire is allowed (player can capture player pieces)
+                if (allowFriendlyFire)
                 {
-                    //capturable! valid
-                    return true;
-                }   
+                    //Is this cell capturable?
+                    if (nextCell.GetBoardEntity().CanBeCaptured())
+                    {
+                        //capturable! valid
+                        return true;
+                    }
+                    else
+                    {
+                        //Uncapturable invalid
+                        return false;
+                    }
+                }
                 else 
                 {
-                    //Uncapturable invalid
-                    return false;
+                    //Is this cell capturable by player?
+                    if (nextCell.GetBoardEntity().CanBeCapturedByPlayer())
+                    {
+                        //capturable! valid
+                        return true;
+                    }
+                    else
+                    {
+                        //Uncapturable invalid
+                        return false;
+                    }
                 }
+
             }
             else 
             {
@@ -802,7 +820,6 @@ public class BoardController : MonoBehaviour
 
     //BehaviourRelated
     #region Behaviour_Related
-    //TODO REVISE THIS FUNCTION THAT I DID IN THE HURRY, ALSO ADD FRINDLY FIRE ON IT VAR
     /// <summary>
     /// This is equivalant to a normal move, but made by a behaviour
     /// <br/>
@@ -812,11 +829,10 @@ public class BoardController : MonoBehaviour
     /// </summary>
     /// <param name="currentPos"></param>
     /// <param name="targetDirection"></param>
-    public void MovedByBehaviour(Vector2Int currentPos, Direction targetDirection)
+    public void MovedByBehaviour(Vector2Int currentPos, Direction targetDirection,bool allowFriendlyFire)
     {
-        if (NextMoveIsValid(currentPos, targetDirection))
+        if (NextMoveIsValid(currentPos, targetDirection, allowFriendlyFire))
         {
-            //TODO CHECK IF CAN BE CAPTURED BEFORE MOVING
 
             //Last Selected BoardCell
             BoardCell lastCell = tiles[currentPos.x, currentPos.y].GetComponent<BoardCell>();
@@ -889,7 +905,7 @@ public class BoardController : MonoBehaviour
     {
         if (NextMoveIsInBounds(currentPos, targetDirection))
         {
-            //TODO CHECK IF CAN BE CAPTURED BEFORE MOVING
+            
 
             //Last Selected BoardCell
             BoardCell lastCell = tiles[currentPos.x, currentPos.y].GetComponent<BoardCell>();

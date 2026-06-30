@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9211492356499773266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: cc902e1d039486a47a71e79e3a94867c
+  positionInGuid: {x: 796.5923, y: 171.5}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
+  currentBehaviourState: 0
+  targetDirection: 2
+  currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0
+--- !u!114 &-8443355017914762107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 230c96b7a8e00744fbcc154fe9c5dce4, type: 3}
+  m_Name: SelectorNode
+  m_EditorClassIdentifier: 
+  guid: 72eeb9ce67250774b91a298b6d8415a7
+  positionInGuid: {x: 409.59222, y: -30.50001}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  children:
+  - {fileID: -3703866991988793871}
+  - {fileID: -2463454553645104178}
+  - {fileID: -9211492356499773266}
+--- !u!114 &-3703866991988793871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: 8d504bfcbf718c24ebb3c1e19f129e6b
+  positionInGuid: {x: 361.59225, y: 171.5}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
+  currentBehaviourState: 0
+  targetDirection: 0
+  currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0
+--- !u!114 &-2463454553645104178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9be3da09dce1f77449fd37d1772d76bd, type: 3}
+  m_Name: BehaviorMovePiece
+  m_EditorClassIdentifier: 
+  guid: 6fcb2fa1448a5114f9cbb92cf47f71a5
+  positionInGuid: {x: 568.5922, y: 171.5}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: 0}
+  currentBehaviourState: 0
+  targetDirection: 1
+  currentPos: {x: 0, y: 0}
+  allowFriendlyFire: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbd023a4fc5a4c44abc993deeca6b3b3, type: 3}
+  m_Name: TryMoveUp
+  m_EditorClassIdentifier: 
+  rootNode: {fileID: 3894194828776916870}
+  treeState: 0
+  nodes:
+  - {fileID: 3894194828776916870}
+  - {fileID: -8443355017914762107}
+  - {fileID: -3703866991988793871}
+  - {fileID: -2463454553645104178}
+  - {fileID: -9211492356499773266}
+  behaviourListener: {fileID: 0}
+--- !u!114 &3894194828776916870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d3196fb7cb44ab42ac75c453fa2906a, type: 3}
+  m_Name: TriggerNode
+  m_EditorClassIdentifier: 
+  guid: 308da0bcc25949545ac89d95253e0437
+  positionInGuid: {x: 125.64177, y: -30}
+  behaviourListener: {fileID: 0}
+  state: 0
+  started: 0
+  child: {fileID: -8443355017914762107}
